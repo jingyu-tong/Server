@@ -5,20 +5,20 @@
 
 #include <iostream>
 
-void threadFunc() {
-    EventLoop loop;
-    loop.loop();
-    printf("threadFunc(): pid = %d, tid = %d\n", getpid(), CurrentThread::tid());
+void threadFunc() { 
+	printf("thread(): pid = %d, tid = %d\n", getpid(), CurrentThread::tid());
+	EventLoop loop;
+	loop.loop();
 }
 
 int main(int, char**) {
-    printf("main(): pid = %d, tid = %d\n", getpid(), CurrentThread::tid());
-    
-    EventLoop loop;
+	printf("main(): pid = %d, tid = %d\n", getpid(), CurrentThread::tid());
+	
+	EventLoop loop;
 
-    Thread thread(threadFunc);
-    thread.start();//启动子线程
+	Thread thread(threadFunc);
+	thread.start();//启动子线程
 
-    loop.loop();
-    pthread_exit(NULL);
+	loop.loop();
+	pthread_exit(NULL);
 }

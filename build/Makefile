@@ -163,6 +163,33 @@ Channel.cpp.s:
 	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Channel.cpp.s
 .PHONY : Channel.cpp.s
 
+Epoll.o: Epoll.cpp.o
+
+.PHONY : Epoll.o
+
+# target to build an object file
+Epoll.cpp.o:
+	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Epoll.cpp.o
+.PHONY : Epoll.cpp.o
+
+Epoll.i: Epoll.cpp.i
+
+.PHONY : Epoll.i
+
+# target to preprocess a source file
+Epoll.cpp.i:
+	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Epoll.cpp.i
+.PHONY : Epoll.cpp.i
+
+Epoll.s: Epoll.cpp.s
+
+.PHONY : Epoll.s
+
+# target to generate assembly for a file
+Epoll.cpp.s:
+	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Epoll.cpp.s
+.PHONY : Epoll.cpp.s
+
 EventLoop.o: EventLoop.cpp.o
 
 .PHONY : EventLoop.o
@@ -230,6 +257,9 @@ help:
 	@echo "... Channel.o"
 	@echo "... Channel.i"
 	@echo "... Channel.s"
+	@echo "... Epoll.o"
+	@echo "... Epoll.i"
+	@echo "... Epoll.s"
 	@echo "... EventLoop.o"
 	@echo "... EventLoop.i"
 	@echo "... EventLoop.s"

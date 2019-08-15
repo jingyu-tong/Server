@@ -5,6 +5,17 @@ CMakeFiles/Demo.dir/Channel.cpp.o: ../Channel.cpp
 CMakeFiles/Demo.dir/Channel.cpp.o: ../Channel.h
 CMakeFiles/Demo.dir/Channel.cpp.o: ../base/noncopyable.h
 
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../Channel.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../Epoll.cpp
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../Epoll.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../EventLoop.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/Condition.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/CountDownLatch.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/CurrentThread.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/MutexLock.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/Thread.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/noncopyable.h
+
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../EventLoop.cpp
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../EventLoop.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/Condition.h
