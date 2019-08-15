@@ -5,10 +5,11 @@
 #define CHANNEL_H_
 
 #include "base/noncopyable.h"
+#include "EventLoop.h"
 
 #include <functional>
 
-class Eventloop;
+class EventLoop;
 
 //用于IO事件分发
 //一个Channel负责一个fd
@@ -18,7 +19,7 @@ class Channel : noncopyable
     public:
         typedef std::function<void()> CallBack;
 
-        Channel(Eventloop* loop, int fd);
+        Channel(EventLoop* loop, int fd);
 
         //注册读写错误回调
         //TODO(jingyu): 搞清引用，右值引用，move三者的区别
@@ -31,6 +32,12 @@ class Channel : noncopyable
         void setErrorCallback(const CallBack& eh) {
             errorHandler_ = eh;
         }
+        void enableReading() { events_ |= kReadEvent; update(); }
+        void disableReading() { events_ &= ~kReadEvent; update(); }
+        void enableWriting() { events_ |= kWriteEvent; update(); }
+        void disableWriting() { events_ &= ~kWriteEvent; update(); }
+        void disableAll() { events_ = kNoneEvent; update(); }
+
         void handleEvent(); //事件处理
 
         void setRevents(int revents)
@@ -44,8 +51,17 @@ class Channel : noncopyable
         //返回events
         int getEvents() const 
         { return events_; }
+
+        //将Channel加入reacotr
+        void update();
+        
     private:
-        Eventloop* loop_; //属于的reactor
+        static const int kNoneEvent;
+        static const int kReadEvent;
+        static const int kWriteEvent;
+
+
+        EventLoop* loop_; //属于的reactor
         const int fd_; //负责的fd
         int events_; //poll/epoll关心的事件
         int revents_; //活动事件

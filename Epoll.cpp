@@ -8,9 +8,10 @@
 #include <sys/epoll.h>
 #include <map>
 
-Epoll::Epoll(Eventloop* loop)
+Epoll::Epoll(EventLoop* loop)
     :   ownerloop_(loop),
-        epollfd_(epoll_create1(EPOLL_CLOEXEC))
+        epollfd_(epoll_create1(EPOLL_CLOEXEC)),
+         events_(kInitEventListSize)
 {
 
 }
@@ -67,9 +68,13 @@ std::vector<Channel*> Epoll::poll(int timeoutMs) {
     while (true)
     {
         int num_events = epoll_wait(epollfd_, &*events_.begin(), events_.size(), timeoutMs);
+        printf("num return is: %d\n", num_events);
         if (num_events < 0)
             ; //fail
-        
+        if (static_cast<size_t> (num_events) == events_.size())
+        {
+            events_.resize(events_.size()*2);
+        }
         std::vector<ChannelPtr> active_channels = getActiveChannels(num_events); //返回更新，并返回活动channel
         return active_channels;
     }
@@ -90,6 +95,6 @@ std::vector<Channel*> Epoll::getActiveChannels(int num_events) {
             cur_channel->setEvents(0);
             active_channels.push_back(cur_channel);
         }
-        return active_channels;
     }
+     return active_channels;
 }

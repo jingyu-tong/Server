@@ -7,8 +7,14 @@
 #include "base/Thread.h"
 #include "base/CurrentThread.h"
 #include "base/noncopyable.h"
+#include "Epoll.h"
 
 #include <assert.h>
+#include <memory>
+#include <vector>
+
+class Epoll;
+class Channel;
 
 //封装Reactor 
 class EventLoop : noncopyable
@@ -24,9 +30,20 @@ public:
     void assertInLoopThread() {
         assert(isInLoopThread());
     }
+    void quit() {
+        quit_ = true;
+    }
+
+    //更新事件
+    void updateChannel(Channel* channel);
 private:
+    typedef std::vector<Channel*> ChannelList;
+
     bool looping_;
+    bool quit_;
     const pid_t threadID_;
+    std::shared_ptr<Epoll> poller_; 
+    ChannelList active_channels_;
 };
 
 

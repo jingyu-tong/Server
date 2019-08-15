@@ -13,3 +13,10 @@ add_executable(Demo main.cpp EventLoop.cpp Channel.cpp Epoll.cpp)
 # 添加链接库
 target_link_libraries(Demo Base)
 
+#添加调试信息
+SET(CMAKE_BUILD_TYPE "Debug")
+SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g2 -ggdb")
+SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+
+
+

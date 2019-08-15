@@ -1,19 +1,20 @@
 //@author Jingyu Tong
 //@email: jingyutong0806@gmail.com
 
-//@author Jingyu Tong
-//@email: jingyutong0806@gmail.com
-
 #include "Channel.h"
 
 #include <sys/epoll.h>
 
-Channel::Channel(Eventloop* loop, int fd)
+const int Channel::kNoneEvent = 0;
+const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;
+const int Channel::kWriteEvent = EPOLLOUT;
+
+Channel::Channel(EventLoop* loop, int fd)
     :   loop_(loop),
         fd_(fd),
         events_(0),
         revents_(0)
-        {}
+    {}
 
 
 //判断事件并进行处理
@@ -30,4 +31,8 @@ void Channel::handleEvent() {
         if(writeHandler_) 
             writeHandler_();
     }
+}
+
+void Channel::update()  {
+    loop_->updateChannel(this);
 }

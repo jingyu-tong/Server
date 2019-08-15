@@ -6,12 +6,14 @@
 
 #include "Channel.h"
 #include "base/noncopyable.h"
-#include "EventLoop.h"
 
 #include <sys/epoll.h>
 #include <vector>
 #include <map>
 #include <memory>
+
+class EventLoop;
+class Channel;
 
 class Epoll : noncopyable
 {
@@ -20,7 +22,7 @@ class Epoll : noncopyable
         typedef std::map<int, Channel*> ChannelMap;
         typedef Channel* ChannelPtr;
         
-        Epoll(Eventloop* loop);
+        Epoll(EventLoop* loop);
         ~Epoll();
 
         void epollAdd(ChannelPtr request); //注册新描述符
@@ -32,7 +34,8 @@ class Epoll : noncopyable
 
 
     private:
-        Eventloop* ownerloop_; //归属loop
+        static const int kInitEventListSize = 16;
+        EventLoop* ownerloop_; //归属loop
         EventList events_; //关心事件
         ChannelMap fd_to_channel_; //fd转换为Channel
         int epollfd_;
