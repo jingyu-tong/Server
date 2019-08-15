@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jingyu/WebServer/WebServer
+CMAKE_SOURCE_DIR = /home/jingyu/Code/WebServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jingyu/WebServer/WebServer/build
+CMAKE_BINARY_DIR = /home/jingyu/Code/WebServer/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/jingyu/WebServer/WebServer/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles /home/jingyu/WebServer/WebServer/build/base/CMakeFiles/progress.marks
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles 0
+	cd /home/jingyu/Code/WebServer/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles /home/jingyu/Code/WebServer/build/base/CMakeFiles/progress.marks
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/clean
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/preinstall
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/preinstall
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/jingyu/WebServer/WebServer/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/jingyu/Code/WebServer/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 base/CMakeFiles/Base.dir/rule:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/CMakeFiles/Base.dir/rule
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f CMakeFiles/Makefile2 base/CMakeFiles/Base.dir/rule
 .PHONY : base/CMakeFiles/Base.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ Base: base/CMakeFiles/Base.dir/rule
 
 # fast build rule for target.
 Base/fast:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/build
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/build
 .PHONY : Base/fast
 
 CountDownLatch.o: CountDownLatch.cpp.o
@@ -131,7 +131,7 @@ CountDownLatch.o: CountDownLatch.cpp.o
 
 # target to build an object file
 CountDownLatch.cpp.o:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CountDownLatch.cpp.o
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CountDownLatch.cpp.o
 .PHONY : CountDownLatch.cpp.o
 
 CountDownLatch.i: CountDownLatch.cpp.i
@@ -140,7 +140,7 @@ CountDownLatch.i: CountDownLatch.cpp.i
 
 # target to preprocess a source file
 CountDownLatch.cpp.i:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CountDownLatch.cpp.i
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CountDownLatch.cpp.i
 .PHONY : CountDownLatch.cpp.i
 
 CountDownLatch.s: CountDownLatch.cpp.s
@@ -149,7 +149,7 @@ CountDownLatch.s: CountDownLatch.cpp.s
 
 # target to generate assembly for a file
 CountDownLatch.cpp.s:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CountDownLatch.cpp.s
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CountDownLatch.cpp.s
 .PHONY : CountDownLatch.cpp.s
 
 CurrentThread.o: CurrentThread.cpp.o
@@ -158,7 +158,7 @@ CurrentThread.o: CurrentThread.cpp.o
 
 # target to build an object file
 CurrentThread.cpp.o:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CurrentThread.cpp.o
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CurrentThread.cpp.o
 .PHONY : CurrentThread.cpp.o
 
 CurrentThread.i: CurrentThread.cpp.i
@@ -167,7 +167,7 @@ CurrentThread.i: CurrentThread.cpp.i
 
 # target to preprocess a source file
 CurrentThread.cpp.i:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CurrentThread.cpp.i
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CurrentThread.cpp.i
 .PHONY : CurrentThread.cpp.i
 
 CurrentThread.s: CurrentThread.cpp.s
@@ -176,7 +176,7 @@ CurrentThread.s: CurrentThread.cpp.s
 
 # target to generate assembly for a file
 CurrentThread.cpp.s:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CurrentThread.cpp.s
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/CurrentThread.cpp.s
 .PHONY : CurrentThread.cpp.s
 
 Thread.o: Thread.cpp.o
@@ -185,7 +185,7 @@ Thread.o: Thread.cpp.o
 
 # target to build an object file
 Thread.cpp.o:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/Thread.cpp.o
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/Thread.cpp.o
 .PHONY : Thread.cpp.o
 
 Thread.i: Thread.cpp.i
@@ -194,7 +194,7 @@ Thread.i: Thread.cpp.i
 
 # target to preprocess a source file
 Thread.cpp.i:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/Thread.cpp.i
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/Thread.cpp.i
 .PHONY : Thread.cpp.i
 
 Thread.s: Thread.cpp.s
@@ -203,7 +203,7 @@ Thread.s: Thread.cpp.s
 
 # target to generate assembly for a file
 Thread.cpp.s:
-	cd /home/jingyu/WebServer/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/Thread.cpp.s
+	cd /home/jingyu/Code/WebServer/build && $(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/Thread.cpp.s
 .PHONY : Thread.cpp.s
 
 # Help Target
@@ -235,6 +235,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/jingyu/WebServer/WebServer/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/jingyu/Code/WebServer/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jingyu/WebServer/WebServer
+CMAKE_SOURCE_DIR = /home/jingyu/Code/WebServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jingyu/WebServer/WebServer/build
+CMAKE_BINARY_DIR = /home/jingyu/Code/WebServer/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles /home/jingyu/WebServer/WebServer/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles /home/jingyu/Code/WebServer/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -135,6 +135,33 @@ Base: cmake_check_build_system
 Base/fast:
 	$(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/build
 .PHONY : Base/fast
+
+Channel.o: Channel.cpp.o
+
+.PHONY : Channel.o
+
+# target to build an object file
+Channel.cpp.o:
+	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Channel.cpp.o
+.PHONY : Channel.cpp.o
+
+Channel.i: Channel.cpp.i
+
+.PHONY : Channel.i
+
+# target to preprocess a source file
+Channel.cpp.i:
+	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Channel.cpp.i
+.PHONY : Channel.cpp.i
+
+Channel.s: Channel.cpp.s
+
+.PHONY : Channel.s
+
+# target to generate assembly for a file
+Channel.cpp.s:
+	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/Channel.cpp.s
+.PHONY : Channel.cpp.s
 
 EventLoop.o: EventLoop.cpp.o
 
@@ -200,6 +227,9 @@ help:
 	@echo "... Demo"
 	@echo "... edit_cache"
 	@echo "... Base"
+	@echo "... Channel.o"
+	@echo "... Channel.i"
+	@echo "... Channel.s"
 	@echo "... EventLoop.o"
 	@echo "... EventLoop.i"
 	@echo "... EventLoop.s"

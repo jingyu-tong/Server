@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jingyu/WebServer/WebServer
+CMAKE_SOURCE_DIR = /home/jingyu/Code/WebServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jingyu/WebServer/WebServer/build
+CMAKE_BINARY_DIR = /home/jingyu/Code/WebServer/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/Demo.dir
@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/jingyu/WebServer/WebServer/build
 CMakeFiles/Demo.dir/all: base/CMakeFiles/Base.dir/all
 	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/depend
 	$(MAKE) -f CMakeFiles/Demo.dir/build.make CMakeFiles/Demo.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jingyu/WebServer/WebServer/build/CMakeFiles --progress-num=5,6,7 "Built target Demo"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jingyu/Code/WebServer/build/CMakeFiles --progress-num=5,6,7,8 "Built target Demo"
 .PHONY : CMakeFiles/Demo.dir/all
 
 # Include target in all.
@@ -76,9 +76,9 @@ all: CMakeFiles/Demo.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Demo.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles 7
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles 8
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Demo.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles 0
 .PHONY : CMakeFiles/Demo.dir/rule
 
 # Convenience name for target.
@@ -121,7 +121,7 @@ base/preinstall:
 base/CMakeFiles/Base.dir/all:
 	$(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/depend
 	$(MAKE) -f base/CMakeFiles/Base.dir/build.make base/CMakeFiles/Base.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jingyu/WebServer/WebServer/build/CMakeFiles --progress-num=1,2,3,4 "Built target Base"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jingyu/Code/WebServer/build/CMakeFiles --progress-num=1,2,3,4 "Built target Base"
 .PHONY : base/CMakeFiles/Base.dir/all
 
 # Include target in all.
@@ -131,9 +131,9 @@ all: base/CMakeFiles/Base.dir/all
 
 # Build rule for subdir invocation for target.
 base/CMakeFiles/Base.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 base/CMakeFiles/Base.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/WebServer/WebServer/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jingyu/Code/WebServer/build/CMakeFiles 0
 .PHONY : base/CMakeFiles/Base.dir/rule
 
 # Convenience name for target.

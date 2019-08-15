@@ -6,9 +6,21 @@
 
 #IncludeRegexTransform: 
 
-/home/jingyu/WebServer/WebServer/EventLoop.cpp
+/home/jingyu/Code/WebServer/Channel.cpp
+Channel.h
+/home/jingyu/Code/WebServer/Channel.h
+sys/epoll.h
+-
+
+/home/jingyu/Code/WebServer/Channel.h
+base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
+functional
+-
+
+/home/jingyu/Code/WebServer/EventLoop.cpp
 EventLoop.h
-/home/jingyu/WebServer/WebServer/EventLoop.h
+/home/jingyu/Code/WebServer/EventLoop.h
 poll.h
 -
 assert.h
@@ -18,41 +30,41 @@ pthread.h
 unistd.h
 -
 
-/home/jingyu/WebServer/WebServer/EventLoop.h
+/home/jingyu/Code/WebServer/EventLoop.h
 base/Thread.h
-/home/jingyu/WebServer/WebServer/base/Thread.h
+/home/jingyu/Code/WebServer/base/Thread.h
 base/CurrentThread.h
-/home/jingyu/WebServer/WebServer/base/CurrentThread.h
+/home/jingyu/Code/WebServer/base/CurrentThread.h
 base/noncopyable.h
-/home/jingyu/WebServer/WebServer/base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
 assert.h
 -
 
-/home/jingyu/WebServer/WebServer/base/Condition.h
+/home/jingyu/Code/WebServer/base/Condition.h
 noncopyable.h
-/home/jingyu/WebServer/WebServer/base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
 MutexLock.h
-/home/jingyu/WebServer/WebServer/base/MutexLock.h
+/home/jingyu/Code/WebServer/base/MutexLock.h
 pthread.h
 -
 
-/home/jingyu/WebServer/WebServer/base/CountDownLatch.h
+/home/jingyu/Code/WebServer/base/CountDownLatch.h
 noncopyable.h
-/home/jingyu/WebServer/WebServer/base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
 MutexLock.h
-/home/jingyu/WebServer/WebServer/base/MutexLock.h
+/home/jingyu/Code/WebServer/base/MutexLock.h
 Condition.h
-/home/jingyu/WebServer/WebServer/base/Condition.h
+/home/jingyu/Code/WebServer/base/Condition.h
 
-/home/jingyu/WebServer/WebServer/base/CurrentThread.h
+/home/jingyu/Code/WebServer/base/CurrentThread.h
 stdint.h
 -
 
-/home/jingyu/WebServer/WebServer/base/MutexLock.h
+/home/jingyu/Code/WebServer/base/MutexLock.h
 noncopyable.h
-/home/jingyu/WebServer/WebServer/base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
 CurrentThread.h
-/home/jingyu/WebServer/WebServer/base/CurrentThread.h
+/home/jingyu/Code/WebServer/base/CurrentThread.h
 pthread.h
 -
 cstdio
@@ -60,11 +72,11 @@ cstdio
 assert.h
 -
 
-/home/jingyu/WebServer/WebServer/base/Thread.h
+/home/jingyu/Code/WebServer/base/Thread.h
 noncopyable.h
-/home/jingyu/WebServer/WebServer/base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
 CountDownLatch.h
-/home/jingyu/WebServer/WebServer/base/CountDownLatch.h
+/home/jingyu/Code/WebServer/base/CountDownLatch.h
 pthread.h
 -
 functional
@@ -78,11 +90,11 @@ sys/syscall.h
 unistd.h
 -
 
-/home/jingyu/WebServer/WebServer/base/noncopyable.h
+/home/jingyu/Code/WebServer/base/noncopyable.h
 
-/home/jingyu/WebServer/WebServer/main.cpp
+/home/jingyu/Code/WebServer/main.cpp
 EventLoop.h
-/home/jingyu/WebServer/WebServer/EventLoop.h
+/home/jingyu/Code/WebServer/EventLoop.h
 iostream
 -
 

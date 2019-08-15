@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jingyu/WebServer/WebServer/base/CountDownLatch.cpp" "/home/jingyu/WebServer/WebServer/build/base/CMakeFiles/Base.dir/CountDownLatch.cpp.o"
-  "/home/jingyu/WebServer/WebServer/base/CurrentThread.cpp" "/home/jingyu/WebServer/WebServer/build/base/CMakeFiles/Base.dir/CurrentThread.cpp.o"
-  "/home/jingyu/WebServer/WebServer/base/Thread.cpp" "/home/jingyu/WebServer/WebServer/build/base/CMakeFiles/Base.dir/Thread.cpp.o"
+  "/home/jingyu/Code/WebServer/base/CountDownLatch.cpp" "/home/jingyu/Code/WebServer/build/base/CMakeFiles/Base.dir/CountDownLatch.cpp.o"
+  "/home/jingyu/Code/WebServer/base/CurrentThread.cpp" "/home/jingyu/Code/WebServer/build/base/CMakeFiles/Base.dir/CurrentThread.cpp.o"
+  "/home/jingyu/Code/WebServer/base/Thread.cpp" "/home/jingyu/Code/WebServer/build/base/CMakeFiles/Base.dir/Thread.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

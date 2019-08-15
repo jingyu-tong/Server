@@ -1,4 +1,4 @@
-# Install script for directory: /home/jingyu/WebServer/WebServer/base
+# Install script for directory: /home/jingyu/Code/WebServer/base
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

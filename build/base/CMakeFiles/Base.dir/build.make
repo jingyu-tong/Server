@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jingyu/WebServer/WebServer
+CMAKE_SOURCE_DIR = /home/jingyu/Code/WebServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jingyu/WebServer/WebServer/build
+CMAKE_BINARY_DIR = /home/jingyu/Code/WebServer/build
 
 # Include any dependencies generated for this target.
 include base/CMakeFiles/Base.dir/depend.make
@@ -59,16 +59,16 @@ include base/CMakeFiles/Base.dir/flags.make
 
 base/CMakeFiles/Base.dir/CountDownLatch.cpp.o: base/CMakeFiles/Base.dir/flags.make
 base/CMakeFiles/Base.dir/CountDownLatch.cpp.o: ../base/CountDownLatch.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jingyu/WebServer/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object base/CMakeFiles/Base.dir/CountDownLatch.cpp.o"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Base.dir/CountDownLatch.cpp.o -c /home/jingyu/WebServer/WebServer/base/CountDownLatch.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jingyu/Code/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object base/CMakeFiles/Base.dir/CountDownLatch.cpp.o"
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Base.dir/CountDownLatch.cpp.o -c /home/jingyu/Code/WebServer/base/CountDownLatch.cpp
 
 base/CMakeFiles/Base.dir/CountDownLatch.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Base.dir/CountDownLatch.cpp.i"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jingyu/WebServer/WebServer/base/CountDownLatch.cpp > CMakeFiles/Base.dir/CountDownLatch.cpp.i
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jingyu/Code/WebServer/base/CountDownLatch.cpp > CMakeFiles/Base.dir/CountDownLatch.cpp.i
 
 base/CMakeFiles/Base.dir/CountDownLatch.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Base.dir/CountDownLatch.cpp.s"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jingyu/WebServer/WebServer/base/CountDownLatch.cpp -o CMakeFiles/Base.dir/CountDownLatch.cpp.s
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jingyu/Code/WebServer/base/CountDownLatch.cpp -o CMakeFiles/Base.dir/CountDownLatch.cpp.s
 
 base/CMakeFiles/Base.dir/CountDownLatch.cpp.o.requires:
 
@@ -83,16 +83,16 @@ base/CMakeFiles/Base.dir/CountDownLatch.cpp.o.provides.build: base/CMakeFiles/Ba
 
 base/CMakeFiles/Base.dir/CurrentThread.cpp.o: base/CMakeFiles/Base.dir/flags.make
 base/CMakeFiles/Base.dir/CurrentThread.cpp.o: ../base/CurrentThread.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jingyu/WebServer/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object base/CMakeFiles/Base.dir/CurrentThread.cpp.o"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Base.dir/CurrentThread.cpp.o -c /home/jingyu/WebServer/WebServer/base/CurrentThread.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jingyu/Code/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object base/CMakeFiles/Base.dir/CurrentThread.cpp.o"
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Base.dir/CurrentThread.cpp.o -c /home/jingyu/Code/WebServer/base/CurrentThread.cpp
 
 base/CMakeFiles/Base.dir/CurrentThread.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Base.dir/CurrentThread.cpp.i"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jingyu/WebServer/WebServer/base/CurrentThread.cpp > CMakeFiles/Base.dir/CurrentThread.cpp.i
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jingyu/Code/WebServer/base/CurrentThread.cpp > CMakeFiles/Base.dir/CurrentThread.cpp.i
 
 base/CMakeFiles/Base.dir/CurrentThread.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Base.dir/CurrentThread.cpp.s"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jingyu/WebServer/WebServer/base/CurrentThread.cpp -o CMakeFiles/Base.dir/CurrentThread.cpp.s
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jingyu/Code/WebServer/base/CurrentThread.cpp -o CMakeFiles/Base.dir/CurrentThread.cpp.s
 
 base/CMakeFiles/Base.dir/CurrentThread.cpp.o.requires:
 
@@ -107,16 +107,16 @@ base/CMakeFiles/Base.dir/CurrentThread.cpp.o.provides.build: base/CMakeFiles/Bas
 
 base/CMakeFiles/Base.dir/Thread.cpp.o: base/CMakeFiles/Base.dir/flags.make
 base/CMakeFiles/Base.dir/Thread.cpp.o: ../base/Thread.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jingyu/WebServer/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object base/CMakeFiles/Base.dir/Thread.cpp.o"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Base.dir/Thread.cpp.o -c /home/jingyu/WebServer/WebServer/base/Thread.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jingyu/Code/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object base/CMakeFiles/Base.dir/Thread.cpp.o"
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Base.dir/Thread.cpp.o -c /home/jingyu/Code/WebServer/base/Thread.cpp
 
 base/CMakeFiles/Base.dir/Thread.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Base.dir/Thread.cpp.i"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jingyu/WebServer/WebServer/base/Thread.cpp > CMakeFiles/Base.dir/Thread.cpp.i
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jingyu/Code/WebServer/base/Thread.cpp > CMakeFiles/Base.dir/Thread.cpp.i
 
 base/CMakeFiles/Base.dir/Thread.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Base.dir/Thread.cpp.s"
-	cd /home/jingyu/WebServer/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jingyu/WebServer/WebServer/base/Thread.cpp -o CMakeFiles/Base.dir/Thread.cpp.s
+	cd /home/jingyu/Code/WebServer/build/base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jingyu/Code/WebServer/base/Thread.cpp -o CMakeFiles/Base.dir/Thread.cpp.s
 
 base/CMakeFiles/Base.dir/Thread.cpp.o.requires:
 
@@ -143,9 +143,9 @@ base/libBase.a: base/CMakeFiles/Base.dir/CurrentThread.cpp.o
 base/libBase.a: base/CMakeFiles/Base.dir/Thread.cpp.o
 base/libBase.a: base/CMakeFiles/Base.dir/build.make
 base/libBase.a: base/CMakeFiles/Base.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jingyu/WebServer/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libBase.a"
-	cd /home/jingyu/WebServer/WebServer/build/base && $(CMAKE_COMMAND) -P CMakeFiles/Base.dir/cmake_clean_target.cmake
-	cd /home/jingyu/WebServer/WebServer/build/base && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Base.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jingyu/Code/WebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libBase.a"
+	cd /home/jingyu/Code/WebServer/build/base && $(CMAKE_COMMAND) -P CMakeFiles/Base.dir/cmake_clean_target.cmake
+	cd /home/jingyu/Code/WebServer/build/base && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Base.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 base/CMakeFiles/Base.dir/build: base/libBase.a
@@ -159,10 +159,10 @@ base/CMakeFiles/Base.dir/requires: base/CMakeFiles/Base.dir/Thread.cpp.o.require
 .PHONY : base/CMakeFiles/Base.dir/requires
 
 base/CMakeFiles/Base.dir/clean:
-	cd /home/jingyu/WebServer/WebServer/build/base && $(CMAKE_COMMAND) -P CMakeFiles/Base.dir/cmake_clean.cmake
+	cd /home/jingyu/Code/WebServer/build/base && $(CMAKE_COMMAND) -P CMakeFiles/Base.dir/cmake_clean.cmake
 .PHONY : base/CMakeFiles/Base.dir/clean
 
 base/CMakeFiles/Base.dir/depend:
-	cd /home/jingyu/WebServer/WebServer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jingyu/WebServer/WebServer /home/jingyu/WebServer/WebServer/base /home/jingyu/WebServer/WebServer/build /home/jingyu/WebServer/WebServer/build/base /home/jingyu/WebServer/WebServer/build/base/CMakeFiles/Base.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jingyu/Code/WebServer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jingyu/Code/WebServer /home/jingyu/Code/WebServer/base /home/jingyu/Code/WebServer/build /home/jingyu/Code/WebServer/build/base /home/jingyu/Code/WebServer/build/base/CMakeFiles/Base.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : base/CMakeFiles/Base.dir/depend
 
