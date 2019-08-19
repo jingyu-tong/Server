@@ -20,6 +20,7 @@ Epoll::~Epoll()
 
 }
 
+//添加事件，更新映射
 void Epoll::epollAdd(ChannelPtr request) {
     int fd = request->getFd();
     
@@ -68,7 +69,6 @@ std::vector<Channel*> Epoll::poll(int timeoutMs) {
     while (true)
     {
         int num_events = epoll_wait(epollfd_, &*events_.begin(), events_.size(), timeoutMs);
-        printf("num return is: %d\n", num_events);
         if (num_events < 0)
             ; //fail
         if (static_cast<size_t> (num_events) == events_.size())
@@ -97,4 +97,20 @@ std::vector<Channel*> Epoll::getActiveChannels(int num_events) {
         }
     }
      return active_channels;
+}
+
+void Epoll::updateChannel(ChannelPtr request) {
+    if(fd_to_channel_.count(request->getFd()) == 0) {
+        //新的事件
+        epollAdd(request);     
+        printf("new\n");
+    } else if(request->getEvents() == Channel::kNoneEvent) {
+        //删除已有事件
+        epollDel(request);
+        printf("delete\n");
+    } else {
+        //更改已有事件
+        epollMod(request);
+        printf("mod");
+    }
 }

@@ -48,6 +48,8 @@ void EventLoop :: loop() {
     }
     looping_ = false;
 }
+//更新channel
 void EventLoop::updateChannel(Channel* channel) {
-    poller_->epollAdd(channel);
+    assertInLoopThread(); //只允许IO线程更改channel
+    poller_->updateChannel(channel);
 }

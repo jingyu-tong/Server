@@ -36,10 +36,11 @@ public:
 
     //更新事件
     void updateChannel(Channel* channel);
+
 private:
     typedef std::vector<Channel*> ChannelList;
 
-    bool looping_;
+    bool looping_; 
     bool quit_;
     const pid_t threadID_;
     std::shared_ptr<Epoll> poller_; 

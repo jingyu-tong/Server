@@ -32,6 +32,7 @@ class Channel : noncopyable
         void setErrorCallback(const CallBack& eh) {
             errorHandler_ = eh;
         }
+        //开关事件，并更新poller等待的相应事件
         void enableReading() { events_ |= kReadEvent; update(); }
         void disableReading() { events_ &= ~kReadEvent; update(); }
         void enableWriting() { events_ |= kWriteEvent; update(); }
@@ -55,12 +56,11 @@ class Channel : noncopyable
         //将Channel加入reacotr
         void update();
         
-    private:
         static const int kNoneEvent;
         static const int kReadEvent;
         static const int kWriteEvent;
-
-
+    
+    private:
         EventLoop* loop_; //属于的reactor
         const int fd_; //负责的fd
         int events_; //poll/epoll关心的事件
