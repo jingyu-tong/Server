@@ -34,6 +34,10 @@ CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/MutexLock.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/Thread.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/noncopyable.h
 
+CMakeFiles/Demo.dir/Timer.cpp.o: ../Timer.cpp
+CMakeFiles/Demo.dir/Timer.cpp.o: ../Timer.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../base/noncopyable.h
+
 CMakeFiles/Demo.dir/main.cpp.o: ../Channel.h
 CMakeFiles/Demo.dir/main.cpp.o: ../Epoll.h
 CMakeFiles/Demo.dir/main.cpp.o: ../EventLoop.h

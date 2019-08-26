@@ -34,6 +34,10 @@ CMakeFiles/Demo.dir/EventLoop.cpp.o
  /home/jingyu/Code/WebServer/base/MutexLock.h
  /home/jingyu/Code/WebServer/base/Thread.h
  /home/jingyu/Code/WebServer/base/noncopyable.h
+CMakeFiles/Demo.dir/Timer.cpp.o
+ /home/jingyu/Code/WebServer/Timer.cpp
+ /home/jingyu/Code/WebServer/Timer.h
+ /home/jingyu/Code/WebServer/base/noncopyable.h
 CMakeFiles/Demo.dir/main.cpp.o
  /home/jingyu/Code/WebServer/Channel.h
  /home/jingyu/Code/WebServer/Epoll.h

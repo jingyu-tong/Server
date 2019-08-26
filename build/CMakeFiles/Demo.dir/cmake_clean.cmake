@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Demo.dir/EventLoop.cpp.o"
   "CMakeFiles/Demo.dir/Channel.cpp.o"
   "CMakeFiles/Demo.dir/Epoll.cpp.o"
+  "CMakeFiles/Demo.dir/Timer.cpp.o"
   "Demo.pdb"
   "Demo"
 )
