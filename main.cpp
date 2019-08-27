@@ -9,32 +9,24 @@
 #include <string.h>
 
 EventLoop* g_loop;
-Channel* g_channel;
 
-void timeout() { 
-	printf("Timeout\n");
-	g_channel->disableReading();
+void timeout2() {
+	printf("Timeout 10s\n");
 	g_loop->quit();
 }
+void timeout() { 
+	printf("Timeout 5s\n");
+	g_loop->runAfter(timeout2, 5000);
+}
+
+
 
 int main(int, char**) {
-	printf("begin\n");
-	
 	EventLoop loop;
 	g_loop = &loop;
 
-	int timerfd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
-	Channel channel(&loop, timerfd);
-	g_channel = &channel;
-	channel.setReadCallback(timeout);
-	channel.enableReading();
-
-	struct itimerspec howlong;
-	bzero(&howlong, sizeof(howlong));
-	howlong.it_value.tv_sec = 5;
-	timerfd_settime(timerfd, 0, &howlong, NULL);
+	loop.runAfter(timeout, 5000);
 
 	loop.loop();
-	
-	close(timerfd);
+
 }

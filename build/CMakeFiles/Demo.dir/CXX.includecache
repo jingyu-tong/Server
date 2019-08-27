@@ -51,6 +51,8 @@ EventLoop.h
 /home/jingyu/Code/WebServer/EventLoop.h
 Epoll.h
 /home/jingyu/Code/WebServer/Epoll.h
+Timer.h
+/home/jingyu/Code/WebServer/Timer.h
 poll.h
 -
 assert.h
@@ -69,6 +71,8 @@ base/noncopyable.h
 /home/jingyu/Code/WebServer/base/noncopyable.h
 Epoll.h
 /home/jingyu/Code/WebServer/Epoll.h
+Timer.h
+/home/jingyu/Code/WebServer/Timer.h
 assert.h
 -
 memory
@@ -79,19 +83,31 @@ vector
 /home/jingyu/Code/WebServer/Timer.cpp
 Timer.h
 /home/jingyu/Code/WebServer/Timer.h
+Channel.h
+/home/jingyu/Code/WebServer/Channel.h
 sys/time.h
 -
 queue
+-
+utility
+-
+sys/timerfd.h
+-
+memory.h
 -
 
 /home/jingyu/Code/WebServer/Timer.h
 base/noncopyable.h
 /home/jingyu/Code/WebServer/base/noncopyable.h
+Channel.h
+/home/jingyu/Code/WebServer/Channel.h
 memory
 -
 queue
 -
 deque
+-
+functional
 -
 
 /home/jingyu/Code/WebServer/base/Condition.h

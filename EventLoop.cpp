@@ -3,6 +3,7 @@
 
 #include "EventLoop.h"
 #include "Epoll.h"
+#include "Timer.h"
 
 #include <poll.h>
 #include <assert.h>
@@ -16,7 +17,8 @@ __thread EventLoop* t_loopInThisThread = 0;
 EventLoop ::EventLoop() 
 :   looping_(false),
     threadID_(CurrentThread::tid()), 
-    poller_(new Epoll(this))
+    poller_(new Epoll(this)),
+    timer_queue_(new TimerManager(this))
     {
         //只允许一个EventLoop
         if(t_loopInThisThread) {
@@ -52,4 +54,10 @@ void EventLoop :: loop() {
 void EventLoop::updateChannel(Channel* channel) {
     assertInLoopThread(); //只允许IO线程更改channel
     poller_->updateChannel(channel);
+}
+
+//提供定时器封装
+//过一段时间运行callback
+void EventLoop::runAfter(Timer::TimerCallback callback, int timeout) {
+    timer_queue_->addTimer(std::move(callback), timeout);
 }

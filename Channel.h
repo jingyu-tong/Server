@@ -23,13 +23,13 @@ class Channel : noncopyable
 
         //注册读写错误回调
         //TODO(jingyu): 搞清引用，右值引用，move三者的区别
-        void setReadCallback(const CallBack& rh) {
+        void setReadCallback(const CallBack&& rh) {
             readHandler_ = rh;            
         }
-        void setWriteCallback(const CallBack& wh) {
+        void setWriteCallback(const CallBack&& wh) {
            writeHandler_ = wh; 
         }
-        void setErrorCallback(const CallBack& eh) {
+        void setErrorCallback(const CallBack&& eh) {
             errorHandler_ = eh;
         }
         //开关事件，并更新poller等待的相应事件

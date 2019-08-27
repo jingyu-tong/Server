@@ -8,6 +8,7 @@
 #include "base/CurrentThread.h"
 #include "base/noncopyable.h"
 #include "Epoll.h"
+#include "Timer.h"
 
 #include <assert.h>
 #include <memory>
@@ -15,11 +16,14 @@
 
 class Epoll;
 class Channel;
+class TimerManager;
 
 //封装Reactor 
 class EventLoop : noncopyable
 {
 public:
+    typedef std::function<void()> TimerCallback;
+
     EventLoop();
     ~EventLoop();
     //main loop
@@ -37,6 +41,9 @@ public:
     //更新事件
     void updateChannel(Channel* channel);
 
+    //定时器封装
+    void runAfter(TimerCallback callback, int timeout);
+
 private:
     typedef std::vector<Channel*> ChannelList;
 
@@ -45,6 +52,8 @@ private:
     const pid_t threadID_;
     std::shared_ptr<Epoll> poller_; 
     ChannelList active_channels_;
+    std::unique_ptr<TimerManager> timer_queue_; //一个reactor持有一个timerqueue
+
 };
 
 

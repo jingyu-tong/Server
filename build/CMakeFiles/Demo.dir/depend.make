@@ -5,6 +5,7 @@ CMakeFiles/Demo.dir/Channel.cpp.o: ../Channel.cpp
 CMakeFiles/Demo.dir/Channel.cpp.o: ../Channel.h
 CMakeFiles/Demo.dir/Channel.cpp.o: ../Epoll.h
 CMakeFiles/Demo.dir/Channel.cpp.o: ../EventLoop.h
+CMakeFiles/Demo.dir/Channel.cpp.o: ../Timer.h
 CMakeFiles/Demo.dir/Channel.cpp.o: ../base/Condition.h
 CMakeFiles/Demo.dir/Channel.cpp.o: ../base/CountDownLatch.h
 CMakeFiles/Demo.dir/Channel.cpp.o: ../base/CurrentThread.h
@@ -16,6 +17,7 @@ CMakeFiles/Demo.dir/Epoll.cpp.o: ../Channel.h
 CMakeFiles/Demo.dir/Epoll.cpp.o: ../Epoll.cpp
 CMakeFiles/Demo.dir/Epoll.cpp.o: ../Epoll.h
 CMakeFiles/Demo.dir/Epoll.cpp.o: ../EventLoop.h
+CMakeFiles/Demo.dir/Epoll.cpp.o: ../Timer.h
 CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/Condition.h
 CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/CountDownLatch.h
 CMakeFiles/Demo.dir/Epoll.cpp.o: ../base/CurrentThread.h
@@ -27,6 +29,7 @@ CMakeFiles/Demo.dir/EventLoop.cpp.o: ../Channel.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../Epoll.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../EventLoop.cpp
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../EventLoop.h
+CMakeFiles/Demo.dir/EventLoop.cpp.o: ../Timer.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/Condition.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/CountDownLatch.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/CurrentThread.h
@@ -34,13 +37,22 @@ CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/MutexLock.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/Thread.h
 CMakeFiles/Demo.dir/EventLoop.cpp.o: ../base/noncopyable.h
 
+CMakeFiles/Demo.dir/Timer.cpp.o: ../Channel.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../Epoll.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../EventLoop.h
 CMakeFiles/Demo.dir/Timer.cpp.o: ../Timer.cpp
 CMakeFiles/Demo.dir/Timer.cpp.o: ../Timer.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../base/Condition.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../base/CountDownLatch.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../base/CurrentThread.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../base/MutexLock.h
+CMakeFiles/Demo.dir/Timer.cpp.o: ../base/Thread.h
 CMakeFiles/Demo.dir/Timer.cpp.o: ../base/noncopyable.h
 
 CMakeFiles/Demo.dir/main.cpp.o: ../Channel.h
 CMakeFiles/Demo.dir/main.cpp.o: ../Epoll.h
 CMakeFiles/Demo.dir/main.cpp.o: ../EventLoop.h
+CMakeFiles/Demo.dir/main.cpp.o: ../Timer.h
 CMakeFiles/Demo.dir/main.cpp.o: ../base/Condition.h
 CMakeFiles/Demo.dir/main.cpp.o: ../base/CountDownLatch.h
 CMakeFiles/Demo.dir/main.cpp.o: ../base/CurrentThread.h
