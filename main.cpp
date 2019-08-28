@@ -10,22 +10,21 @@
 
 EventLoop* g_loop;
 
-void timeout2() {
-	printf("Timeout 10s\n");
+void print() {
+	printf("ready to quit\n");
 	g_loop->quit();
 }
-void timeout() { 
-	printf("Timeout 5s\n");
-	g_loop->runAfter(timeout2, 5000);
+void threadFunc() {
+	printf("thread\n");
+	g_loop->runAfter(print, 2000);
 }
-
-
 
 int main(int, char**) {
 	EventLoop loop;
 	g_loop = &loop;
 
-	loop.runAfter(timeout, 5000);
+	Thread t(threadFunc);
+	t.start();
 
 	loop.loop();
 

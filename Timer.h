@@ -54,6 +54,7 @@ class TimerManager {
         ~TimerManager();
         void addTimer(TimerCallback callback, int timeout); //添加timer
         void handleExpiredEvent(); //处理到期事件
+        void addTimerInLoop(TimerPointer timer); //把修改列表转移到IO线程
 
     private:
         EventLoop* loop_;

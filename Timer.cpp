@@ -112,17 +112,23 @@ TimerManager::~TimerManager() {
     timer_channel_->disableAll();
 }
 
+//将更改列表转移到IO线程完成
 void TimerManager::addTimer(TimerCallback callback, int timeout) {
     TimerPointer new_timer(new Timer(callback, timeout));
-    timer_queue_.push(new_timer);
-    resetTimerfd(timerfd_, new_timer);
+    loop_->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, new_timer));
+}
+
+//添加timer的用户回调
+void TimerManager::addTimerInLoop(TimerPointer timer) {
+    timer_queue_.push(timer);
+    resetTimerfd(timerfd_, timer);
 }
 
 //处理超时连接
 //采用小顶堆对定时器进行管理
 void TimerManager::handleExpiredEvent() {
     printf("timer handler\n");
-    readTimerfd(timerfd_);
+    readTimerfd(timerfd_); //避免再次触发
     while(!timer_queue_.empty()) {
         TimerPointer early_timer = timer_queue_.top();
        
