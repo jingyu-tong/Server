@@ -2,6 +2,7 @@
 //@email: jingyutong0806@gmail.com
 
 #include "EventLoop.h"
+#include "EventLoopThread.h"
 #include "Channel.h"
 
 #include <iostream>
@@ -16,16 +17,14 @@ void print() {
 }
 void threadFunc() {
 	printf("thread\n");
-	g_loop->runAfter(print, 2000);
+	g_loop->runAfter(print, 10000);
 }
 
 int main(int, char**) {
-	EventLoop loop;
-	g_loop = &loop;
+	EventLoopThread reactor;
+	g_loop = reactor.startLoop();
+	g_loop->runAfter(print, 10000);
 
-	Thread t(threadFunc);
-	t.start();
-
-	loop.loop();
+	sleep(20);	
 
 }
