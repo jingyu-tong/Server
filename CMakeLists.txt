@@ -9,9 +9,9 @@ aux_source_directory(. DIR_SRCS)
 # 添加 math 子目录
 add_subdirectory(base)
 # 指定生成目标 
-add_executable(Demo main.cpp EventLoop.cpp Channel.cpp Epoll.cpp Timer.cpp)
+add_executable(Server main.cpp EventLoop.cpp Channel.cpp Epoll.cpp Timer.cpp)
 # 添加链接库
-target_link_libraries(Demo Base)
+target_link_libraries(Server Base)
 
 #添加调试信息
 SET(CMAKE_BUILD_TYPE "Debug")

@@ -1,1 +1,0 @@
-/usr/bin/c++   -O0 -Wall -g2 -ggdb  -rdynamic CMakeFiles/Demo.dir/main.cpp.o CMakeFiles/Demo.dir/EventLoop.cpp.o CMakeFiles/Demo.dir/Channel.cpp.o CMakeFiles/Demo.dir/Epoll.cpp.o CMakeFiles/Demo.dir/Timer.cpp.o  -o Demo base/libBase.a -lpthread 

@@ -1,6 +1,0 @@
-/home/jingyu/Code/WebServer/build/CMakeFiles/rebuild_cache.dir
-/home/jingyu/Code/WebServer/build/CMakeFiles/Demo.dir
-/home/jingyu/Code/WebServer/build/CMakeFiles/edit_cache.dir
-/home/jingyu/Code/WebServer/build/base/CMakeFiles/rebuild_cache.dir
-/home/jingyu/Code/WebServer/build/base/CMakeFiles/Base.dir
-/home/jingyu/Code/WebServer/build/base/CMakeFiles/edit_cache.dir
