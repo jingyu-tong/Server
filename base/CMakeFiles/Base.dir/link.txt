@@ -1,2 +1,0 @@
-/usr/bin/ar qc libBase.a  CMakeFiles/Base.dir/CountDownLatch.cpp.o CMakeFiles/Base.dir/CurrentThread.cpp.o CMakeFiles/Base.dir/Thread.cpp.o
-/usr/bin/ranlib libBase.a
