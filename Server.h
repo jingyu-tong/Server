@@ -26,8 +26,6 @@ typedef std::string Buffer;    //用于Buffer
 //TODO(jingyu): 
 //1. 新建链接 2. 处理消息 3. 关闭链接 
 //之后需要限制最大描述符个数
-//由于采用非阻塞IO+IO复用，因此不会阻塞在read/write等调用，因此这些操作均有可能不完整
-//那么缓冲区的存在基本是必须的，这里采用string类作为缓冲区
 
 class Server : noncopyable {
     public: 
