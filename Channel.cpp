@@ -14,8 +14,13 @@ Channel::Channel(EventLoop* loop, int fd)
         fd_(fd),
         events_(0),
         revents_(0)
-    {}
+    {
+        printf("new channel\n");
+    }
 
+Channel::~Channel() {
+    printf("delete channel\n");
+}
 
 //判断事件并进行处理
 void Channel::handleEvent() {

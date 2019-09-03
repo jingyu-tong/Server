@@ -11,7 +11,7 @@
 Epoll::Epoll(EventLoop* loop)
     :   ownerloop_(loop),
         epollfd_(epoll_create1(EPOLL_CLOEXEC)),
-         events_(kInitEventListSize)
+        events_(kInitEventListSize)
 {
 
 }
@@ -103,14 +103,11 @@ void Epoll::updateChannel(ChannelPtr request) {
     if(fd_to_channel_.count(request->getFd()) == 0) {
         //新的事件
         epollAdd(request);     
-        printf("new\n");
     } else if(request->getEvents() == Channel::kNoneEvent) {
         //删除已有事件
         epollDel(request);
-        printf("delete\n");
     } else {
         //更改已有事件
         epollMod(request);
-        printf("mod");
     }
 }

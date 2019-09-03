@@ -11,6 +11,8 @@
 #include <netinet/in.h>
 #include <memory>
 
+typedef std::string Buffer;    //用于Buffer
+
 //     struct sockaddr_in {
 //         sa_family_t    sin_family; /* address family: AF_INET */
 //         uint16_t       sin_port;   /* port in network byte order */
@@ -24,9 +26,12 @@
 //TODO(jingyu): 
 //1. 新建链接 2. 处理消息 3. 关闭链接 
 //之后需要限制最大描述符个数
+//由于采用非阻塞IO+IO复用，因此不会阻塞在read/write等调用，因此这些操作均有可能不完整
+//那么缓冲区的存在基本是必须的，这里采用string类作为缓冲区
+
 class Server : noncopyable {
-    public:
-        typedef std::function<void (int, char*, int)> MessageCallback;
+    public: 
+        typedef std::function<void (int, Buffer&)> MessageCallback;
         typedef std::shared_ptr<Channel> ChannelPointer;
 
         Server(EventLoop* loop, int port); 
@@ -47,6 +52,7 @@ class Server : noncopyable {
         EventLoop* loop_;
         int port_;
         int listenfd_;
+        Buffer inbuffer_;
         std::shared_ptr<Channel> accept_channel_;
         std::map<int, ChannelPointer> fd_channels_;
 

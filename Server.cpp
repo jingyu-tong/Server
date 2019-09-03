@@ -79,10 +79,11 @@ void Server::handleConnection() {
 }
 
 void Server::handleMessage(int connfd) {
-    char buf[65535];
+    char buf[65536];
     ssize_t n = read(connfd, buf, sizeof(buf));
     if(n > 0) {
-        message_callback_(connfd, buf, n);
+        inbuffer_ += Buffer(buf, buf + n);
+        message_callback_(connfd, inbuffer_);
     } else if(n == 0) { //关闭
         handleClose(connfd);
     }

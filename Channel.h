@@ -20,7 +20,7 @@ class Channel : noncopyable
         typedef std::function<void()> CallBack;
 
         Channel(EventLoop* loop, int fd);
-
+        ~Channel();
         //注册读写错误回调
         //TODO(jingyu): 搞清引用，右值引用，move三者的区别
         void setReadCallback(const CallBack rh) {
