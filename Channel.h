@@ -32,6 +32,9 @@ class Channel : noncopyable
         void setErrorCallback(const CallBack eh) {
             errorHandler_ = eh;
         }
+        void setCloseCallback(const CallBack cb) {
+            closeHandler_ = cb;
+        }
         //开关事件，并更新poller等待的相应事件
         void enableReading() { events_ |= kReadEvent; update(); }
         void disableReading() { events_ &= ~kReadEvent; update(); }
@@ -71,7 +74,7 @@ class Channel : noncopyable
         CallBack readHandler_;
         CallBack writeHandler_;
         CallBack errorHandler_;
-
+        CallBack closeHandler_;
 };
 
 

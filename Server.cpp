@@ -7,6 +7,9 @@
 #include <sys/socket.h>
 #include <string.h>
 
+//From unp:
+//服务器调用一般顺序socket->bind->listen->accept->process
+
 //创建非阻塞套接字
 int createNonblockingSocketsFd() {
     //IPv4, 非阻塞, TCP
@@ -54,22 +57,45 @@ void Server::start() {
     started_  = true;
 }
 
+//accept 一个
+//TODO(jingyu): 尝试其他方法
+//1. 循环accept，直到没有新连接
+//2. 每次accept N（一般为10）个链接
 void Server::handleConnection() {
     loop_->assertInLoopThread();
     struct sockaddr_in client_addr;
     bzero(&client_addr, sizeof(client_addr));
     socklen_t clien = sizeof(client_addr);
 
-    //accept 一个
-    //TODO(jingyu): 尝试其他方法
-    //1. 循环accept，直到没有新连接
-    //2. 每次accept N（一般为10）个链接
     int connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien);
     printf("the new connfd is: %d", connfd);
     if(connfd > 0) { //成功，返回新的描述符
         ChannelPointer new_channel(new Channel(loop_, connfd));
-        accept_channels_.push_back(new_channel);
-        new_channel->setReadCallback(message_callback_);
+        fd_channels_[connfd] = new_channel;
+        new_channel->setReadCallback(std::bind(&Server::handleMessage, this, new_channel->getFd()));
         new_channel->enableReading();
+        new_channel->setCloseCallback(std::bind(&Server::handleClose, this, new_channel->getFd()));
     }
+}
+
+void Server::handleMessage(int connfd) {
+    char buf[65535];
+    ssize_t n = read(connfd, buf, sizeof(buf));
+    if(n > 0) {
+        message_callback_(connfd, buf, n);
+    } else if(n == 0) { //关闭
+        handleClose(connfd);
+    }
+    
+}
+
+//删除链接函数
+//需要在列表中释放并删除持有的channel
+//并关闭描述符
+void Server::handleClose(int closefd) {
+    ChannelPointer close_channel = fd_channels_[closefd];
+    fd_channels_.erase(closefd);
+    close_channel->disableAll(); //poller会自动移除出关注事件
+    close(closefd);
+    printf("close fd\n");
 }

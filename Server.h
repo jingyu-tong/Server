@@ -22,11 +22,11 @@
 
 //IPv4 only now
 //TODO(jingyu): 
-//1. 新建链接 2. 处理消息 
+//1. 新建链接 2. 处理消息 3. 关闭链接 
 //之后需要限制最大描述符个数
 class Server : noncopyable {
     public:
-        typedef std::function<void ()> MessageCallback;
+        typedef std::function<void (int, char*, int)> MessageCallback;
         typedef std::shared_ptr<Channel> ChannelPointer;
 
         Server(EventLoop* loop, int port); 
@@ -36,6 +36,8 @@ class Server : noncopyable {
 
         //设置新建链接回调，处理消息回调
         void handleConnection();
+        void handleMessage(int connfd);
+        void handleClose(int closefd);
         void setMessageCallback(MessageCallback callback) {
             message_callback_ = callback;
         }
@@ -46,7 +48,7 @@ class Server : noncopyable {
         int port_;
         int listenfd_;
         std::shared_ptr<Channel> accept_channel_;
-        std::vector<ChannelPointer> accept_channels_;
+        std::map<int, ChannelPointer> fd_channels_;
 
         MessageCallback message_callback_;
 

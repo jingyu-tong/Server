@@ -19,6 +19,10 @@ Channel::Channel(EventLoop* loop, int fd)
 
 //判断事件并进行处理
 void Channel::handleEvent() {
+    if((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
+        if(closeHandler_)
+            closeHandler_();
+    }
     if(revents_ & ( EPOLLERR)) { //描述符非法或错误
         if(errorHandler_) 
             errorHandler_();
