@@ -4,6 +4,7 @@
 #include "EventLoop.h"
 #include "EventLoopThread.h"
 #include "Channel.h"
+#include "Server.h"
 
 #include <iostream>
 #include <sys/timerfd.h>
@@ -11,20 +12,17 @@
 
 EventLoop* g_loop;
 
-void print() {
-	printf("ready to quit\n");
+void onMessage() {
+	printf("receive data\n");
 	g_loop->quit();
-}
-void threadFunc() {
-	printf("thread\n");
-	g_loop->runAfter(print, 10000);
 }
 
 int main(int, char**) {
-	EventLoopThread reactor;
-	g_loop = reactor.startLoop();
-	g_loop->runAfter(print, 10000);
+	EventLoop loop;
+	g_loop = &loop;
+	Server server(&loop, 4000);
+	server.setMessageCallback(onMessage);
+	server.start();
 
-	sleep(20);	
-
+	loop.loop();
 }
