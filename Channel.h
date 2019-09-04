@@ -58,6 +58,10 @@ class Channel : noncopyable
         int getRevents() const 
         { return revents_; }
 
+        //判断写事件是否已经开启，减少一次update
+        bool isWriting() const 
+        {return events_ & kWriteEvent; }
+
         //将Channel加入reacotr
         void update();
         

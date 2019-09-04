@@ -5,6 +5,7 @@
 #include "EventLoopThread.h"
 #include "Channel.h"
 #include "Server.h"
+#include "Connection.h"
 
 #include <iostream>
 #include <sys/timerfd.h>
@@ -12,8 +13,12 @@
 
 EventLoop* g_loop;
 
-void onMessage(const ConnectionPointer& conn) {
-	printf("receive data\n");
+void onMessage(const ConnectionPointer& conn, Buffer& msg) {
+	if(msg == "quit\n")
+		g_loop->quit();
+	conn->send(msg);
+	printf("receive data: %s\n", msg.data());
+	msg = "";
 }
 void onConnection(const ConnectionPointer& conn) {
 	printf("hello\n");
@@ -22,7 +27,7 @@ void onConnection(const ConnectionPointer& conn) {
 int main(int, char**) {
 	EventLoop loop;
 	g_loop = &loop;
-	Server server(&loop, 4000);
+	Server server(&loop, 3500);
 	server.setMessageCallback(onMessage);
 	server.setConnectionCallback(onConnection);
 	server.start();

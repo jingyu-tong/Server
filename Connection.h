@@ -34,8 +34,16 @@ class Connection : noncopyable,
         int getFd() const {
             return connfd_;
         }
+
+        //发送数据封装
+        void send(const std::string& message);
+
+        //在ioloop中发送，供send使用
+        void sendInLoop(const std::string& message);
+
     private:
         void handleMessage();
+        void handleWrite(); //发送不完，channel写回调
         void handleClose();
         EventLoop* loop_;
         int connfd_;

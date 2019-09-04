@@ -70,7 +70,7 @@ void Server::handleConnection() {
     socklen_t clien = sizeof(client_addr);
 
     int connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien);
-    printf("the new connfd is: %d", connfd);
+    printf("the new connfd is: %d\n", connfd);
     if(connfd > 0) { //成功，返回新的描述符
         ConnectionPointer new_connection(new Connection(loop_, connfd));
         connections_[connfd] = new_connection;

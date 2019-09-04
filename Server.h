@@ -15,7 +15,7 @@ class Connection;
 typedef std::string Buffer;    //用于Buffer
 typedef std::shared_ptr<Connection> ConnectionPointer;
 typedef std::function<void (const ConnectionPointer&)> ConnectionCallback;
-typedef std::function<void (const ConnectionPointer&)> MessageCallback;
+typedef std::function<void (const ConnectionPointer&, Buffer&)> MessageCallback;
 typedef std::function<void (const ConnectionPointer&)> CloseCallback;
 
 //     struct sockaddr_in {
