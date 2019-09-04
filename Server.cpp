@@ -3,9 +3,11 @@
 
 #include "Server.h"
 #include "Channel.h"
+#include "Connection.h"
 
 #include <sys/socket.h>
 #include <string.h>
+#include <functional>
 
 //From unp:
 //服务器调用一般顺序socket->bind->listen->accept->process
@@ -48,12 +50,12 @@ Server::Server(EventLoop* loop, int port)
     //bind the sockets
     bindSocketsAndPort(listenfd_, port_);
 
-    //注测处理新连接
-    accept_channel_->setReadCallback(std::bind(&Server::handleConnection, this));
-    accept_channel_->enableReading();
 }
 
 void Server::start() {
+    //注测处理新连接函数
+    accept_channel_->setReadCallback(std::bind(&Server::handleConnection, this));
+    accept_channel_->enableReading();
     started_  = true;
 }
 
@@ -70,33 +72,18 @@ void Server::handleConnection() {
     int connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien);
     printf("the new connfd is: %d", connfd);
     if(connfd > 0) { //成功，返回新的描述符
-        ChannelPointer new_channel(new Channel(loop_, connfd));
-        fd_channels_[connfd] = new_channel;
-        new_channel->setReadCallback(std::bind(&Server::handleMessage, this, new_channel->getFd()));
-        new_channel->enableReading();
-        new_channel->setCloseCallback(std::bind(&Server::handleClose, this, new_channel->getFd()));
+        ConnectionPointer new_connection(new Connection(loop_, connfd));
+        connections_[connfd] = new_connection;
+        //通过Connection类设置各种回调
+        new_connection->setMessageCallback(message_callback_);
+        new_connection->setConnectionCallback(connection_callback_);
+        new_connection->setCloseCallback(std::bind(&Server::handleClose, this, std::placeholders::_1));
+        new_connection->settingDone();
     }
-}
-
-void Server::handleMessage(int connfd) {
-    char buf[65536];
-    ssize_t n = read(connfd, buf, sizeof(buf));
-    if(n > 0) {
-        inbuffer_ += Buffer(buf, buf + n);
-        message_callback_(connfd, inbuffer_);
-    } else if(n == 0) { //关闭
-        handleClose(connfd);
-    }
-    
 }
 
 //删除链接函数
-//需要在列表中释放并删除持有的channel
-//并关闭描述符
-void Server::handleClose(int closefd) {
-    ChannelPointer close_channel = fd_channels_[closefd];
-    fd_channels_.erase(closefd);
-    close_channel->disableAll(); //poller会自动移除出关注事件
-    close(closefd);
-    printf("close fd\n");
+//在Connection中注册，用于移除map中的链接
+void Server::handleClose(const ConnectionPointer& conn) {
+    connections_.erase(conn->getFd());
 }

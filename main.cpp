@@ -12,10 +12,11 @@
 
 EventLoop* g_loop;
 
-void onMessage(int connfd, Buffer& buf) {
-	if(buf == "quit")
-		g_loop->quit();
-	printf("receive data is: %s\n",  buf.c_str());
+void onMessage(const ConnectionPointer& conn) {
+	printf("receive data\n");
+}
+void onConnection(const ConnectionPointer& conn) {
+	printf("hello\n");
 }
 
 int main(int, char**) {
@@ -23,6 +24,7 @@ int main(int, char**) {
 	g_loop = &loop;
 	Server server(&loop, 4000);
 	server.setMessageCallback(onMessage);
+	server.setConnectionCallback(onConnection);
 	server.start();
 
 	loop.loop();

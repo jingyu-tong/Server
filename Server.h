@@ -11,7 +11,12 @@
 #include <netinet/in.h>
 #include <memory>
 
+class Connection;
 typedef std::string Buffer;    //用于Buffer
+typedef std::shared_ptr<Connection> ConnectionPointer;
+typedef std::function<void (const ConnectionPointer&)> ConnectionCallback;
+typedef std::function<void (const ConnectionPointer&)> MessageCallback;
+typedef std::function<void (const ConnectionPointer&)> CloseCallback;
 
 //     struct sockaddr_in {
 //         sa_family_t    sin_family; /* address family: AF_INET */
@@ -23,14 +28,10 @@ typedef std::string Buffer;    //用于Buffer
 // INADDR_LOOPBACK: 127.0.0.1 local
 
 //IPv4 only now
-//TODO(jingyu): 
-//1. 新建链接 2. 处理消息 3. 关闭链接 
-//之后需要限制最大描述符个数
-
+//Server管理Connection类，提供设置回调以及链接建立的功能
+//具体的处理都在Connection类完成
 class Server : noncopyable {
     public: 
-        typedef std::function<void (int, Buffer&)> MessageCallback;
-        typedef std::shared_ptr<Channel> ChannelPointer;
 
         Server(EventLoop* loop, int port); 
         ~Server() {}
@@ -39,21 +40,24 @@ class Server : noncopyable {
 
         //设置新建链接回调，处理消息回调
         void handleConnection();
-        void handleMessage(int connfd);
-        void handleClose(int closefd);
+        void setConnectionCallback(ConnectionCallback callback) {
+            connection_callback_ = callback;
+        }
         void setMessageCallback(MessageCallback callback) {
             message_callback_ = callback;
         }
         
     private:
+        void handleClose(const ConnectionPointer& conn);
+
         bool started_;
         EventLoop* loop_;
         int port_;
         int listenfd_;
-        Buffer inbuffer_;
         std::shared_ptr<Channel> accept_channel_;
-        std::map<int, ChannelPointer> fd_channels_;
+        std::map<int, ConnectionPointer> connections_;
 
+        ConnectionCallback connection_callback_;
         MessageCallback message_callback_;
 
 };
