@@ -40,12 +40,13 @@ void bindSocketsAndPort(int sockfd, int port) {
     }
 }
 
-Server::Server(EventLoop* loop, int port) 
+Server::Server(EventLoop* loop, int port, int thread_num) 
     :   started_(false),
         loop_(loop),
         port_(port),
         listenfd_(createNonblockingSocketsFd()),
-        accept_channel_(new Channel(loop_, listenfd_))
+        accept_channel_(new Channel(loop_, listenfd_)),
+        thread_pool_(new EventLoopThreadPool(loop_, thread_num))
 {
     //bind the sockets
     bindSocketsAndPort(listenfd_, port_);
@@ -57,6 +58,7 @@ void Server::start() {
     accept_channel_->setReadCallback(std::bind(&Server::handleConnection, this));
     accept_channel_->enableReading();
     started_  = true;
+    thread_pool_->start();
 }
 
 //accept 一个
@@ -72,13 +74,14 @@ void Server::handleConnection() {
     int connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien);
     printf("the new connfd is: %d\n", connfd);
     if(connfd > 0) { //成功，返回新的描述符
-        ConnectionPointer new_connection(new Connection(loop_, connfd));
+        EventLoop* conn_loop = thread_pool_->getNextLoop();
+        ConnectionPointer new_connection(new Connection(conn_loop, connfd));
         connections_[connfd] = new_connection;
         //通过Connection类设置各种回调
         new_connection->setMessageCallback(message_callback_);
         new_connection->setConnectionCallback(connection_callback_);
         new_connection->setCloseCallback(std::bind(&Server::handleClose, this, std::placeholders::_1));
-        new_connection->settingDone();
+        conn_loop->runInLoop(std::bind(&Connection::settingDone, new_connection)); //必须，因为只允许自己本身线程更改channe信息
     }
 }
 

@@ -6,6 +6,7 @@
 
 #include "base/noncopyable.h"
 #include "EventLoop.h"
+#include "EventLoopThreadPool.h"
 
 #include <netdb.h>
 #include <netinet/in.h>
@@ -33,7 +34,7 @@ typedef std::function<void (const ConnectionPointer&)> CloseCallback;
 class Server : noncopyable {
     public: 
 
-        Server(EventLoop* loop, int port); 
+        Server(EventLoop* loop, int port, int thread_num); 
         ~Server() {}
  
         void start(); //启动Server
@@ -56,6 +57,7 @@ class Server : noncopyable {
         int listenfd_;
         std::shared_ptr<Channel> accept_channel_;
         std::map<int, ConnectionPointer> connections_;
+        std::unique_ptr<EventLoopThreadPool> thread_pool_; 
 
         ConnectionCallback connection_callback_;
         MessageCallback message_callback_;

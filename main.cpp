@@ -27,7 +27,7 @@ void onConnection(const ConnectionPointer& conn) {
 int main(int, char**) {
 	EventLoop loop;
 	g_loop = &loop;
-	Server server(&loop, 3500);
+	Server server(&loop, 4000, 2);
 	server.setMessageCallback(onMessage);
 	server.setConnectionCallback(onConnection);
 	server.start();
