@@ -4,11 +4,13 @@
 #include "Connection.h"
 
 #include <memory>
+#include <sys/socket.h>
 
 Connection::Connection(EventLoop* loop, int connfd)
     :   loop_(loop),
         connfd_(connfd),
-        channel_(new Channel(loop_, connfd_))
+        channel_(new Channel(loop_, connfd_)),
+        state_(kdisconnected)
 {
     
 }
@@ -17,6 +19,7 @@ void Connection::settingDone() {
     channel_->setReadCallback(std::bind(&Connection::handleMessage, this));
     channel_->enableReading();
     channel_->setWriteCallback(std::bind(&Connection::handleWrite, this));
+    state_ = kconnected;
     connection_callback_(shared_from_this());
 }
 
@@ -39,10 +42,12 @@ void Connection::handleClose() {
 
 //发送，判断是否在IO线程，不在就调用runinloop跨线程调用
 void Connection::send(const std::string& message) {
-    if(loop_->isInLoopThread()) {
-        sendInLoop(message);
-    } else {
-        loop_->runInLoop(std::bind(&Connection::sendInLoop, this, message));
+    if(state_ == kconnected) { //被关闭后不能发送
+        if(loop_->isInLoopThread()) {
+            sendInLoop(message);
+        } else {
+            loop_->runInLoop(std::bind(&Connection::sendInLoop, this, message));
+        }
     }
 }
 
@@ -79,8 +84,28 @@ void Connection::handleWrite() {
         } else {
             if(n == outbuffer_.size()) { //写完，可以关闭写回调
                 channel_->disableWriting();
+
+                //如果次链接正在关闭，那么需要重新调用shutdowninloop
+                if(state_ == kdisconnecting) {
+                    shutdownInLoop();
+                }
             }
             outbuffer_ = outbuffer_.substr(n);
+        }
+    }
+}
+
+//关闭链接
+void Connection::shutdown() {
+    state_ = kdisconnecting; //表示准备关闭
+    loop_->runInLoop(std::bind(&Connection::shutdownInLoop, this));
+}
+//loop中正式关闭
+void Connection::shutdownInLoop() {
+    loop_->assertInLoopThread();
+    if(!channel_->isWriting()) { //写完再关闭
+        if(::shutdown(connfd_, SHUT_WR) < 0) {
+            //fail
         }
     }
 }
