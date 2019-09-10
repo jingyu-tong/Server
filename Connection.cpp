@@ -35,9 +35,22 @@ void Connection::handleMessage() {
 }
 
 void Connection::handleClose() {
-    channel_->disableAll(); //自动更新移除poller
-    close(connfd_); //此时关，新的Channel有可能立马占用这个，close回调后channel将自动析构
-    close_callback_(shared_from_this());
+    if(state_ == kconnected) {
+        loop_->assertInLoopThread();
+        state_ = kdisconnecting;
+        channel_->disableAll(); //自动更新移除poller
+        close_callback_(shared_from_this());
+    }
+}
+//用于延长Connection寿命
+void Connection::destroyed() {
+    if(state_ == kconnected || kdisconnecting) {
+        loop_->assertInLoopThread();
+        if(!channel_)
+            channel_->disableAll(); //自动更新移除poller
+        close(connfd_);
+        state_ = kdisconnected;
+    }
 }
 
 //发送，判断是否在IO线程，不在就调用runinloop跨线程调用

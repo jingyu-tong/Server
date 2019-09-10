@@ -19,7 +19,7 @@ class HttpServer : noncopyable {
 
         //解析和分析request
         void parseRequest(HttpInformation* info, Buffer& msg);
-        std::string analyzeRequest(HttpInformation* info, Buffer& msg);
+        std::string analyzeRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg);
 
     private:
         EventLoop* loop_;

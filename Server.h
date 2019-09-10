@@ -50,12 +50,12 @@ class Server : noncopyable {
         
     private:
         void handleClose(const ConnectionPointer& conn);
-
+        void handleCloseInLoop(const ConnectionPointer& conn);
         bool started_;
         EventLoop* loop_;
         int port_;
         int listenfd_;
-        std::shared_ptr<Channel> accept_channel_;
+        std::unique_ptr<Channel> accept_channel_;
         std::map<int, ConnectionPointer> connections_;
         std::unique_ptr<EventLoopThreadPool> thread_pool_; 
 

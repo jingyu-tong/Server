@@ -59,12 +59,16 @@ class HttpInformation : noncopyable {
         std::map<std::string, std::string> getHeaders() const{
             return headers_;
         }
+        TimerManager::TimerPointer getTimer() {
+            return timer_;
+        }
     private:
         enum State state_;
         std::string method_;
         std::string uri_;
         std::string verison_;
         std::map<std::string, std::string> headers_; //
+        TimerManager::TimerPointer timer_; //给一个timer用于超时关闭
 };
 
 //用于封装每个连接需要的信息和操作
@@ -93,14 +97,25 @@ class Connection : noncopyable,
         enum State getState() const {
             return state_;
         }
+        void setState(enum State state) {
+            state_ = state;
+        }
         //for HttpServer
         HttpInformation* getHttpinfo() {
             return &httpinfo_;
         }
 
-        //发送数据封装
-        void send(const std::string& message);
+        void send(const std::string& message);//发送数据封装
         void shutdown(); //关闭链接
+        void foceClose() { //强制关闭链接读写端，这回删除这个链接
+            if (state_ == kconnected){ //还在链接中
+                loop_->runInLoop(std::bind(&Connection::handleClose, this));
+            }
+        }
+        void destroyed();
+        EventLoop* getLoop() const {
+            return loop_;
+        }
     private:
         void handleMessage();
         void handleWrite(); //发送不完，channel写回调

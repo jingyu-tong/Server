@@ -3,11 +3,15 @@
 
 #include "HttpServer.h"
 #include "Connection.h"
+#include "Timer.h"
 
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+
+const int kAliveTime = 5 * 60 * 1000; //ms
+const int kShortTime  = 2 * 1000; //ms
 
 char favicon[555] = {
   '\x89', 'P', 'N', 'G', '\xD', '\xA', '\x1A', '\xA',
@@ -109,8 +113,13 @@ HttpServer::HttpServer(EventLoop* loop, int port, int thread_num)
 }
 
 void HttpServer::onConnection(const ConnectionPointer& conn) {
-    if(conn->getState() == Connection::kdisconnected)
-        printf("new connection\n");
+    if(conn->getState() == Connection::kconnected) {
+        //printf("new connection\n");
+        HttpInformation* info = conn->getHttpinfo();
+        TimerManager::TimerPointer timer = info->getTimer();
+        timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+    }
+    //TODO(jingyu):HttpServer需要一个自己的删除函数，在里头调用forceclose
 }
 
 void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
@@ -119,9 +128,9 @@ void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
         parseRequest(info, msg);
     } 
     if(info->getState() == HttpInformation::kFinished) {  //处理请求并发送响应
-        std::string out = analyzeRequest(info, msg);
+        std::string out = analyzeRequest(conn, info, msg);
         conn->send(out);
-        info->setState(HttpInformation::kExpectBody);
+        info->setState(HttpInformation::kExpectRequest);
     }
 }
 
@@ -142,8 +151,20 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
             //根据request设置method，uri，以及http版本
             //method
             size_t pos_get = request.find("GET");
-            if(pos_get >= 0) {
+            if(pos_get != std::string::npos) {
                 info->setMethod("GET");
+            } else {
+                //error
+            }
+            size_t pos_post = request.find("POST");
+            if(pos_post != std::string::npos) {
+                info->setMethod("POST");
+            } else {
+                //error
+            }
+            size_t pos_head = request.find("HEAD");
+            if(pos_head != std::string::npos) {
+                info->setMethod("HEAD");
             } else {
                 //error
             }
@@ -206,6 +227,7 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
                 //error
             }
 
+            // printf("content-length: %d", content_length);
             if(msg.size() < content_length) { //没有收完
                 return;
             } else { //全部结束
@@ -219,17 +241,21 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
 
 //分析request
 //TODO(jingyu): 对mmap read sendfile三者进行分析，并进行压测，综合分析、理解
-std::string HttpServer::analyzeRequest(HttpInformation* info, Buffer& msg) {
+std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg) {
     std::map<std::string, std::string> headers = info->getHeaders();
     std::string method = info->getMethod();
     std::string uri = info->getUri();
     std::string out;
+    TimerManager::TimerPointer timer = info->getTimer();
     if(method == "GET" || method == "HEAD") {
         std::string header;
         header += "HTTP/" + info->getVerison() + " 200 OK\r\n";
         if(headers.count("Connection") && (headers["Connection"] == "keep-alive" || headers["Connection"] == "Keep-Alive")) {
             //长链接
-            header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(60 * 1000) + "\r\n";
+            header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
+            conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
+        } else {
+            conn->getLoop()->updateTimer(timer, kShortTime); //收到消息，更新时间
         }
 
         if(uri == "hello") {
@@ -250,7 +276,7 @@ std::string HttpServer::analyzeRequest(HttpInformation* info, Buffer& msg) {
         struct stat buf;
         if(stat(uri.c_str(), &buf) < 0) {
             //404 没有
-            printf("error 404\n");
+            // printf("error 404\n");
         }
 
         //确定类型

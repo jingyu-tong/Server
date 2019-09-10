@@ -31,7 +31,7 @@ EventLoop* EventLoopThread::startLoop() {
         while (loop_ == nullptr)
             cond_.wait();
     }
-    printf("thread id[%d] is started\n", thread_.tid());
+    // printf("thread id[%d] is started\n", thread_.tid());
     return loop_;
 }
 

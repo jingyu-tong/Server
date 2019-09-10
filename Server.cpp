@@ -72,7 +72,7 @@ void Server::handleConnection() {
     socklen_t clien = sizeof(client_addr);
 
     int connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien);
-    printf("the new connfd is: %d\n", connfd);
+    // printf("the new connfd is: %d\n", connfd);
     if(connfd > 0) { //成功，返回新的描述符
         EventLoop* conn_loop = thread_pool_->getNextLoop();
         ConnectionPointer new_connection(new Connection(conn_loop, connfd));
@@ -88,5 +88,11 @@ void Server::handleConnection() {
 //删除链接函数
 //在Connection中注册，用于移除map中的链接
 void Server::handleClose(const ConnectionPointer& conn) {
-    connections_.erase(conn->getFd());
+    loop_->runInLoop(std::bind(&Server::handleCloseInLoop, this, conn));
 }
+ void Server::handleCloseInLoop(const ConnectionPointer& conn) {
+     loop_->assertInLoopThread();
+     connections_.erase(conn->getFd());
+     EventLoop* conn_loop = conn->getLoop();
+     conn_loop->runInLoop(std::bind(&Connection::destroyed, conn));
+ }

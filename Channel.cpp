@@ -13,17 +13,20 @@ Channel::Channel(EventLoop* loop, int fd)
     :   loop_(loop),
         fd_(fd),
         events_(0),
-        revents_(0)
+        revents_(0),
+        event_handleing_(false)
     {
-        printf("new channel\n");
+        // printf("new channel\n");
     }
 
 Channel::~Channel() {
-    printf("delete channel\n");
+    // printf("delete channel\n");
+    assert(!event_handleing_);
 }
 
 //判断事件并进行处理
 void Channel::handleEvent() {
+    event_handleing_ = true;
     if((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
         if(closeHandler_)
             closeHandler_();
@@ -40,6 +43,7 @@ void Channel::handleEvent() {
         if(writeHandler_) 
             writeHandler_();
     }
+    event_handleing_ = false;
 }
 
 void Channel::update()  {

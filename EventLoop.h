@@ -17,6 +17,7 @@
 class Epoll;
 class Channel;
 class TimerManager;
+class Timer;
 
 //封装Reactor 
 class EventLoop : noncopyable
@@ -41,7 +42,8 @@ public:
     void updateChannel(Channel* channel);
 
     //定时器封装
-    void runAfter(TimerCallback callback, int timeout);
+    std::shared_ptr<Timer> runAfter(TimerCallback callback, int timeout);
+    void updateTimer(std::shared_ptr<Timer>& timer, int timeout); 
 
     //跨线程调用
     void runInLoop(Functor callback); 
@@ -62,7 +64,7 @@ private:
 
     std::unique_ptr<Channel> wakeup_channel_; //eventfd的channel
     MutexLock mutex_; //用于临界区加锁
-    std::shared_ptr<Epoll> poller_; 
+    std::unique_ptr<Epoll> poller_; 
     ChannelList active_channels_;
     std::unique_ptr<TimerManager> timer_queue_; //一个reactor持有一个timerqueue
     std::vector<Functor> pending_functors_; //回调地址向量

@@ -90,8 +90,15 @@ void EventLoop::updateChannel(Channel* channel) {
 
 //提供定时器封装
 //过一段时间运行callback
-void EventLoop::runAfter(Timer::TimerCallback callback, int timeout) {
-    timer_queue_->addTimer(std::move(callback), timeout);
+//将新生产的Timer指针返回，用于更新timer
+TimerManager::TimerPointer EventLoop::runAfter(Timer::TimerCallback callback, int timeout) {
+    TimerManager::TimerPointer new_timer = timer_queue_->addTimer(std::move(callback), timeout);
+    return new_timer;
+}
+
+//更新runafter的时间，用来推迟或延后调用
+void EventLoop::updateTimer(std::shared_ptr<Timer>& timer, int timeout) {
+    timer_queue_->updateTimer(timer, timeout);
 }
 
 //跨线程调用

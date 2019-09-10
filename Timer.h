@@ -10,6 +10,7 @@
 #include <memory>
 #include <queue>
 #include <deque>
+#include <map>
 #include <functional>
 
 class EventLoop;
@@ -52,7 +53,9 @@ class TimerManager {
          
         TimerManager(EventLoop* loop);
         ~TimerManager();
-        void addTimer(TimerCallback callback, int timeout); //添加timer
+        TimerPointer addTimer(TimerCallback callback, int timeout); //添加timer
+        void updateTimer(TimerPointer timer, int timeout);
+        void updateTimerInLoop(TimerPointer timer, int timeout);
         void handleExpiredEvent(); //处理到期事件
         void addTimerInLoop(TimerPointer timer); //把修改列表转移到IO线程
 
@@ -61,6 +64,9 @@ class TimerManager {
         std::priority_queue<TimerPointer,  std::deque<TimerPointer>, TimerCmp> timer_queue_;
         int timerfd_; //timerfd
         std::unique_ptr<Channel> timer_channel_; //根据timerfd构建channel
+        bool timer_calling_;
+        typedef std::map<TimerPointer, int> TimerMap;
+        TimerMap add_timers_;
 };
 
 

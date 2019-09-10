@@ -102,7 +102,8 @@ bool Timer::isValid() {
 TimerManager::TimerManager(EventLoop* loop) 
     :   loop_(loop),
         timerfd_(createTimerfd()),
-        timer_channel_(new Channel(loop_, timerfd_))
+        timer_channel_(new Channel(loop_, timerfd_)),
+        timer_calling_(false)
 {
     timer_channel_->setReadCallback(std::bind(&TimerManager::handleExpiredEvent, this));
     timer_channel_->enableReading();
@@ -113,9 +114,10 @@ TimerManager::~TimerManager() {
 }
 
 //将更改列表转移到IO线程完成
-void TimerManager::addTimer(TimerCallback callback, int timeout) {
+TimerManager::TimerPointer TimerManager::addTimer(TimerCallback callback, int timeout) {
     TimerPointer new_timer(new Timer(callback, timeout));
     loop_->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, new_timer));
+    return new_timer;
 }
 
 //添加timer的用户回调
@@ -124,11 +126,32 @@ void TimerManager::addTimerInLoop(TimerPointer timer) {
     resetTimerfd(timerfd_, timer);
 }
 
+//更新timer
+void TimerManager::updateTimer(TimerPointer timer, int timeout) {
+    loop_->runInLoop(std::bind(&TimerManager::updateTimerInLoop, this, timer, timeout));
+}
+
+//更新某一个timer的时间
+void TimerManager::updateTimerInLoop(TimerPointer timer, int timeout) {
+    if(timer.use_count() != 0){
+        
+        if(timer_calling_ == false) {
+            timer->update(timeout);
+            //if(add_timers_.count(timer) == 0)
+                timer_queue_.push(timer);
+            resetTimerfd(timerfd_, timer);
+        } else {
+            add_timers_[timer] = timeout;
+        }
+    }
+}
+
 //处理超时连接
 //采用小顶堆对定时器进行管理
 void TimerManager::handleExpiredEvent() {
-    printf("timer handler\n");
+    // printf("timer handler\n");
     readTimerfd(timerfd_); //避免再次触发
+    std::vector<TimerPointer> on_timers;
     while(!timer_queue_.empty()) {
         TimerPointer early_timer = timer_queue_.top();
        
@@ -137,9 +160,31 @@ void TimerManager::handleExpiredEvent() {
             timer_queue_.pop();
         else if(early_timer->isValid() == false) {
             timer_queue_.pop();
-            early_timer->run();
+            on_timers.push_back(early_timer);
         }   
         else
             break; //都没有，下次触发再处理
     }
+    timer_calling_ = true;
+    add_timers_.clear();
+    for(const auto& on_timer : on_timers) {
+        on_timer->run();
+    }
+    timer_calling_ = false;
+
+    //更新到时的timer,要重新加入小顶堆
+    for(const auto& on_timer : on_timers) {
+        if(add_timers_.count(on_timer)) {
+            on_timer->update(add_timers_[on_timer]);
+            timer_queue_.push(on_timer);
+            resetTimerfd(timerfd_, on_timer);
+            add_timers_.erase(on_timer);
+        }
+    }
+
+    //有可能没到时，但是也被更新，下次自动没清楚，不用释放
+    for(const auto& timer : add_timers_) {
+            timer.first->update(timer.second);
+    }
+    // printf("handler out\n");
 }

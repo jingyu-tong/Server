@@ -74,7 +74,7 @@ class Channel : noncopyable
         const int fd_; //负责的fd
         int events_; //poll/epoll关心的事件
         int revents_; //活动事件
-
+        bool event_handleing_;
         CallBack readHandler_;
         CallBack writeHandler_;
         CallBack errorHandler_;
