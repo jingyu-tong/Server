@@ -22,17 +22,16 @@ class Channel : noncopyable
         Channel(EventLoop* loop, int fd);
         ~Channel();
         //注册读写错误回调
-        //TODO(jingyu): 搞清引用，右值引用，move三者的区别
-        void setReadCallback(const CallBack rh) {
+        void setReadCallback(CallBack rh) {
             readHandler_ = std::move(rh);            
         }
-        void setWriteCallback(const CallBack wh) {
+        void setWriteCallback(CallBack wh) {
            writeHandler_ = std::move(wh); 
         }
-        void setErrorCallback(const CallBack eh) {
+        void setErrorCallback(CallBack eh) {
             errorHandler_ = std::move(eh);
         }
-        void setCloseCallback(const CallBack cb) {
+        void setCloseCallback(CallBack cb) {
             closeHandler_ = std::move(cb);
         }
         //开关事件，并更新poller等待的相应事件

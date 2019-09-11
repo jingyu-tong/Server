@@ -18,8 +18,8 @@ struct ThreadData {
     pid_t* tid_;
     CountDownLatch* latch_;
 
-    ThreadData(const ThreadFunc& func, const std::string& name, pid_t* tid, CountDownLatch* latch)
-    :   func_(func),
+    ThreadData(ThreadFunc func, const std::string& name, pid_t* tid, CountDownLatch* latch)
+    :   func_(std::move(func)),
         name_(name),
         tid_(tid),
         latch_(latch)
@@ -51,12 +51,12 @@ void* startThread(void* obj) {
     return NULL;
 }
 
-Thread ::  Thread(const ThreadFunc& func, const std::string& name)
+Thread ::  Thread(ThreadFunc func, const std::string& name)
     :   started_(false),
         joined_(false),
         pthreadID_(0),
         tid_(0),
-        func_(func),
+        func_(std::move(func)),
         name_(name),
         latch_(1)
 {

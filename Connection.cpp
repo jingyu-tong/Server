@@ -98,7 +98,7 @@ void Connection::handleWrite() {
             if(n == outbuffer_.size()) { //写完，可以关闭写回调
                 channel_->disableWriting();
 
-                //如果次链接正在关闭，那么需要重新调用shutdowninloop
+                //如果此链接正在关闭，那么需要重新调用shutdowninloop
                 if(state_ == kdisconnecting) {
                     shutdownInLoop();
                 }

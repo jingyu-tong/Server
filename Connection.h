@@ -59,6 +59,9 @@ class HttpInformation : noncopyable {
         std::map<std::string, std::string> getHeaders() const{
             return headers_;
         }
+        std::string getHeaders(std::string key) {
+            return headers_[key];
+        }
         TimerManager::TimerPointer getTimer() {
             return timer_;
         }
@@ -82,13 +85,13 @@ class Connection : noncopyable,
         Connection(EventLoop* loop, int connfd);
 
         void setMessageCallback(MessageCallback mb) {
-            message_callback_ = mb;
+            message_callback_ = std::move(mb);
         } 
         void setConnectionCallback(ConnectionCallback cb) {
-            connection_callback_ = cb;
+            connection_callback_ = std::move(cb);
         }
         void setCloseCallback(CloseCallback cb) {
-            close_callback_ = cb;
+            close_callback_ = std::move(cb);
         }
         void settingDone();
         int getFd() const {

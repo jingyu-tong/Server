@@ -130,7 +130,13 @@ void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
     if(info->getState() == HttpInformation::kFinished) {  //处理请求并发送响应
         std::string out = analyzeRequest(conn, info, msg);
         conn->send(out);
-        info->setState(HttpInformation::kExpectRequest);
+        std::string conn_state = info->getHeaders("Connection");
+        if(conn_state == "close" || conn_state == "Close") {
+            conn->foceClose(); //短连接，直接关闭
+        } else {
+            info->setState(HttpInformation::kExpectRequest);
+        }
+        
     }
 }
 
@@ -255,7 +261,7 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
             conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
         } else {
-            conn->getLoop()->updateTimer(timer, kShortTime); //收到消息，更新时间
+            //conn->getLoop()->updateTimer(timer, kShortTime); //收到消息，更新时间
         }
 
         if(uri == "hello") {

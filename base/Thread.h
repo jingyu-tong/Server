@@ -19,7 +19,7 @@ class Thread : noncopyable
     public:
         typedef std::function<void ()> ThreadFunc;
         //只能直接初始化，抑制构造函数的隐式转换
-        explicit Thread(const ThreadFunc& func, const std::string& name = std::string());
+        explicit Thread(ThreadFunc func, const std::string& name = std::string());
         ~Thread();
         //创建线程
         void start();

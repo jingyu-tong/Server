@@ -115,7 +115,7 @@ TimerManager::~TimerManager() {
 
 //将更改列表转移到IO线程完成
 TimerManager::TimerPointer TimerManager::addTimer(TimerCallback callback, int timeout) {
-    TimerPointer new_timer(new Timer(callback, timeout));
+    TimerPointer new_timer(new Timer(std::move(callback), timeout));
     loop_->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, new_timer));
     return new_timer;
 }
