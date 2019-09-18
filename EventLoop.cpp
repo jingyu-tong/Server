@@ -4,6 +4,7 @@
 #include "EventLoop.h"
 #include "Epoll.h"
 #include "Timer.h"
+#include "Logging.h"
 
 #include <poll.h>
 #include <assert.h>
@@ -21,7 +22,7 @@ int createEventfd()
   int evtfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
   if (evtfd < 0)
   {
-    //eventfd fail
+    //LOG << "Failed in creating eventfd";
   }
   return evtfd;
 }
@@ -150,9 +151,15 @@ void EventLoop::doPendingFunctors() {
 void EventLoop::handleEventfd() {
     uint64_t one = 1;
     ssize_t n = read(wakeup_fd_, &one, sizeof one);
+    if(n != sizeof one) {
+        //LOG << "EventLoop::handleEventfd() reads" << n << "bytes";
+    }
 }
 //唤醒线程
 void EventLoop::wakeup() {
     uint64_t one = 1;
     ssize_t n = write(wakeup_fd_, &one, sizeof one);
+    if(n != sizeof one) {
+        //LOG << "EventLoop::wakeup() writes" << n << "bytes";
+    }
 }

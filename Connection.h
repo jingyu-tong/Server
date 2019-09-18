@@ -23,7 +23,8 @@ class HttpInformation : noncopyable {
         };
 
         HttpInformation() 
-            :   state_(kExpectRequest)
+            :   state_(kExpectRequest),
+                error_(false)
         {
 
         }
@@ -65,11 +66,18 @@ class HttpInformation : noncopyable {
         TimerManager::TimerPointer getTimer() {
             return timer_;
         }
+        void setError(bool error) {
+            error_ = error;
+        }
+        bool getError() {
+            return error_;
+        }
     private:
         enum State state_;
         std::string method_;
         std::string uri_;
         std::string verison_;
+        bool error_;
         std::map<std::string, std::string> headers_; //
         TimerManager::TimerPointer timer_; //给一个timer用于超时关闭
 };

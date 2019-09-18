@@ -118,29 +118,29 @@ void HttpServer::onConnection(const ConnectionPointer& conn) {
         HttpInformation* info = conn->getHttpinfo();
         TimerManager::TimerPointer timer = info->getTimer();
         timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+        //LOG << "Connection fd = " << conn->getFd() << " is connected"; 
     }
     //TODO(jingyu):HttpServer需要一个自己的删除函数，在里头调用forceclose
 }
 
 void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
     HttpInformation* info = conn->getHttpinfo();
-    if(info->getState() != HttpInformation::kFinished) {
-        parseRequest(info, msg);
+    if(info->getState() != HttpInformation::kFinished && !info->getError()) {
+        parseRequest(conn, info, msg);
     } 
     if(info->getState() == HttpInformation::kFinished) {  //处理请求并发送响应
         std::string out = analyzeRequest(conn, info, msg);
         conn->send(out);
         std::string conn_state = info->getHeaders("Connection");
-        if(conn_state == "close" || conn_state == "Close") {
+        if(conn_state == "close" || conn_state == "Close" ) {
             conn->foceClose(); //短连接，直接关闭
         } else {
             info->setState(HttpInformation::kExpectRequest);
         }
-        
     }
 }
 
-void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
+void HttpServer::parseRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg) {
     //处理请求，这里需要用while，因为有可能一次收完多个部分
     //处理完前一个部分，需要在下一次循环检查下一部分，通过改变state实现
     while(true) {
@@ -151,28 +151,25 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
                 return;
             }
             std::string request = msg.substr(0, pos);
+            //LOG << "Connection fd = " << conn->getFd() << " Request: " << request;
             if(msg.size() >= pos + 2)  //删除request行
                 msg = msg.substr(pos + 2); 
             
             //根据request设置method，uri，以及http版本
             //method
             size_t pos_get = request.find("GET");
+            size_t pos_post = request.find("POST");
+            size_t pos_head = request.find("HEAD");
             if(pos_get != std::string::npos) {
                 info->setMethod("GET");
-            } else {
-                //error
-            }
-            size_t pos_post = request.find("POST");
-            if(pos_post != std::string::npos) {
+            } else if(pos_post != std::string::npos) {
                 info->setMethod("POST");
-            } else {
-                //error
-            }
-            size_t pos_head = request.find("HEAD");
-            if(pos_head != std::string::npos) {
+            } else if(pos_head != std::string::npos) {
                 info->setMethod("HEAD");
             } else {
-                //error
+                info->setError(true);
+                handleError(conn, 400, "Bad Request");
+                break;
             }
             
             //uri
@@ -183,7 +180,9 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
             } else {
                 size_t uri_end = request.find(' ', pos); 
                 if(uri_end < 0) {
-                    //error
+                    info->setError(true);
+                    handleError(conn, 400, "Bad Request");
+                    break;
                 } else {
                     info->setUri(request.substr(pos + 1, uri_end - pos - 1));
                 }
@@ -193,10 +192,14 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
             //verison
             pos = request.find("/", pos);
             if(pos == std::string::npos) {
-                //error
+                info->setError(true);
+                handleError(conn, 400, "Bad Request");
+                break;
             } else {
                 if(request.size() - pos <=3) {
-                    //error
+                    info->setError(true);
+                    handleError(conn, 400, "Bad Request");
+                    break;
                 } else {
                     std::string verison = request.substr(pos + 1, 3);
                     info->setVerison(verison);
@@ -230,7 +233,9 @@ void HttpServer::parseRequest(HttpInformation* info, Buffer& msg) {
             if(headers.count("Content-Length") != 0) {
                 content_length = stoi(headers["Content-Length"]);
             } else {
-                //error
+                info->setError(true);
+                handleError(conn, 400, "Bad Request: Lack of Content-Length");
+                break;
             }
 
             // printf("content-length: %d", content_length);
@@ -256,23 +261,33 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
     if(method == "GET" || method == "HEAD") {
         std::string header;
         header += "HTTP/" + info->getVerison() + " 200 OK\r\n";
+        //1.1默认为长连接
         if(headers.count("Connection") && (headers["Connection"] == "keep-alive" || headers["Connection"] == "Keep-Alive")) {
             //长链接
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
+            conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
+        } else if(info->getVerison() == "HTTP/1.1" && headers["Connection"] != "close") {
+            header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
+            headers["Connection"] = "Keep-Alive";
             conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
         } else {
             //conn->getLoop()->updateTimer(timer, kShortTime); //收到消息，更新时间
         }
 
         if(uri == "hello") {
-            out = "HTTP/1.1 200 OK\r\nCotent-Type: text/plain\r\n\r\nHello World";
+            char hello[] = {"Hello World"};
+            header += "Content-Type: text/plain\r\n";
+            header += "Content-length: " + std::to_string(sizeof hello) + "\r\n";
+            header += "Server: Jingyu's Server\r\n\r\n";
+
+            out += header;
+            out += std::string(hello, hello + sizeof hello);
             return out;
         } 
         if(uri == "favicon.ico") {
             header += "Content-Type: image/png\r\n";
             header += "Content-length: " + std::to_string(sizeof favicon) + "\r\n";
-            header += "Server: Jingyu's Server\r\n";
-            header += "\r\n";
+            header += "Server: Jingyu's Server\r\n\r\n";
 
             out += header;
             out += std::string(favicon, favicon + sizeof favicon);
@@ -281,8 +296,9 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
         
         struct stat buf;
         if(stat(uri.c_str(), &buf) < 0) {
-            //404 没有
-            // printf("error 404\n");
+            info->setError(true);
+            handleError(conn, 404, "Not Found!");
+            return "";
         }
 
         //确定类型
@@ -306,15 +322,18 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
         
         int file_fd = open(uri.c_str(), O_RDONLY, 0);
         if(file_fd < 0) {
-            //404
-            printf("error 404\n");
+            info->setError(true);
+            handleError(conn, 404, "Not Found!");
+            return "";
         }
 
         void* mmap_ret = mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, file_fd, 0);
         close(file_fd);
         if(mmap_ret == (void*)-1) {
             munmap(mmap_ret, buf.st_size);
-            //error 404
+            info->setError(true);
+            handleError(conn, 404, "Not Found!");
+            return "";
         }
         
         char* file_ptr = static_cast<char*>(mmap_ret);
@@ -322,4 +341,25 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
         munmap(mmap_ret, buf.st_size);
         return out;
     }
+}
+
+void HttpServer::handleError(const ConnectionPointer& conn, int err_num, std::string str) {
+    str = " " + str;
+    std::string body;
+    std::string header;
+
+    body += "<html><title>哎~出错了</title>";
+    body += "<body bgcolor=\"ffffff\">";
+    body += std::to_string(err_num) + str;
+    body += "<hr><em> Jingyu's Web Server</em>\n</body></html>";
+    
+    header += "HTTP/1.1 " + std::to_string(err_num) + str + "\r\n";
+    header += "Content-Type: text/html\r\n";
+    header += "Connection: Close\r\n";
+    header += "Content-Length: " + std::to_string(body.size()) + "\r\n";
+    header += "Server: Jingyu's Web Server\r\n";;
+    header += "\r\n";
+
+    header += body;
+    conn->send(header);
 }

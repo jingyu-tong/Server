@@ -7,6 +7,7 @@
 #include "base/noncopyable.h"
 #include "EventLoopThread.h"
 #include "base/Thread.h"
+#include "Logging.h"
 
 #include <vector>
 #include <memory>
@@ -16,7 +17,9 @@
 class EventLoopThreadPool : noncopyable {
     public:
         EventLoopThreadPool(EventLoop* base_loop, int num_threads);
-        ~EventLoopThreadPool() {};
+        ~EventLoopThreadPool() {
+            //LOG << "~EventLoopThreadPoll()";
+        }
 
         void start();
         EventLoop* getNextLoop();

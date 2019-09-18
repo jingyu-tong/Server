@@ -18,9 +18,11 @@ class HttpServer : noncopyable {
         void onConnection(const ConnectionPointer& conn);
 
         //解析和分析request
-        void parseRequest(HttpInformation* info, Buffer& msg);
+        void parseRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg);
         std::string analyzeRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg);
 
+        //错误处理
+        void handleError(const ConnectionPointer& conn, int err_num, std::string str);
     private:
         EventLoop* loop_;
         Server server_;

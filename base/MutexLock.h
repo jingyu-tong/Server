@@ -33,6 +33,9 @@ class MutexLock
             holder_ = 0; //同样，归0后在推出临界区
             pthread_mutex_unlock(&mutex_);
         }
+        pthread_mutex_t* get() {
+            return &mutex_;
+        }
 
     private:
         pthread_mutex_t mutex_;

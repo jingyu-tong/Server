@@ -10,7 +10,8 @@ aux_source_directory(. DIR_SRCS)
 add_subdirectory(base)
 # 指定生成目标 
 add_executable(Server main.cpp EventLoop.cpp Channel.cpp Epoll.cpp Timer.cpp 
-EventLoopThread.cpp Server.cpp Connection.cpp EventLoopThreadPool.cpp HttpServer.cpp)
+EventLoopThread.cpp Server.cpp Connection.cpp EventLoopThreadPool.cpp 
+HttpServer.cpp AsyncLogging.cpp FileUtil.cpp LogFile.cpp LogStream.cpp Logging.cpp)
 # 添加链接库
 target_link_libraries(Server Base)
 

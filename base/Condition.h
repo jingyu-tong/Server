@@ -8,6 +8,7 @@
 #include "MutexLock.h"
 
 #include <pthread.h> 
+#include <errno.h>
 
 class Condition : noncopyable
 {   
@@ -34,6 +35,13 @@ class Condition : noncopyable
             pthread_cond_broadcast(&cond);
         }
 
+        //超时或被唤醒返回
+        bool waitForSeconds(int seconds) {
+            struct timespec abstime;
+            clock_gettime(CLOCK_REALTIME, &abstime);
+            abstime.tv_sec += static_cast<time_t>(seconds);
+            return ETIMEDOUT == pthread_cond_timedwait(&cond, mutex_.get(), &abstime); 
+        }
     private:
         MutexLock& mutex_;
         pthread_cond_t cond;

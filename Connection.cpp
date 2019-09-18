@@ -2,6 +2,7 @@
 //@email: jingyutong0806@gmail.com
 
 #include "Connection.h"
+#include "Logging.h"
 
 #include <memory>
 #include <sys/socket.h>
@@ -30,6 +31,7 @@ void Connection::handleMessage() {
         inbuffer_ += Buffer(buf, buf + n);
         message_callback_(shared_from_this(), inbuffer_);
     } else if(n == 0) { //关闭
+        //LOG << "Connection fd = " << channel_->getFd() << " read 0 byte, is going to close";
         handleClose();
     }
 }
@@ -50,6 +52,7 @@ void Connection::destroyed() {
             channel_->disableAll(); //自动更新移除poller
         close(connfd_);
         state_ = kdisconnected;
+        //LOG << "Connection fd = " << channel_->getFd() << " is disconnected"; 
     }
 }
 

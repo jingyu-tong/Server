@@ -7,6 +7,7 @@
 #include "Server.h"
 #include "Connection.h"
 #include "HttpServer.h"
+#include "Logging.h"
 
 #include <iostream>
 #include <sys/timerfd.h>
@@ -19,7 +20,8 @@ int main(int, char**) {
 	EventLoop loop;
 	g_loop = &loop;
 
-	HttpServer server(&loop, 4000, 4);
+	HttpServer server(&loop, 4200, 3);
 
+	//LOG << "Ready to start";
 	loop.loop();
 }
