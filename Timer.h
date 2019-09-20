@@ -37,14 +37,6 @@ class Timer {
         TimerCallback timer_callback_; //到期回调，被删除不执行
 };
 
-//用于Timer到期之间的比较
-struct TimerCmp {
-        typedef std::shared_ptr<Timer> TimerPointer;
-        bool operator()(TimerPointer a, TimerPointer b) {
-            return a->getExpTime() > b->getExpTime();
-        }
-};
-
 //管理Timer
 class TimerManager {
     public:
@@ -61,12 +53,10 @@ class TimerManager {
 
     private:
         EventLoop* loop_;
-        std::priority_queue<TimerPointer,  std::deque<TimerPointer>, TimerCmp> timer_queue_;
+        std::map<Timer*, TimerPointer> timers_;
         int timerfd_; //timerfd
         std::unique_ptr<Channel> timer_channel_; //根据timerfd构建channel
         bool timer_calling_;
-        typedef std::map<TimerPointer, int> TimerMap;
-        TimerMap add_timers_;
 };
 
 

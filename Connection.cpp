@@ -15,7 +15,9 @@ Connection::Connection(EventLoop* loop, int connfd)
 {
     
 }
-
+Connection::~Connection() {
+    //LOG << "Connection fd = " << channel_->getFd() << " is destructed"; 
+}
 void Connection::settingDone() {
     channel_->setReadCallback(std::bind(&Connection::handleMessage, this));
     channel_->enableReading();
@@ -37,12 +39,10 @@ void Connection::handleMessage() {
 }
 
 void Connection::handleClose() {
-    if(state_ == kconnected) {
         loop_->assertInLoopThread();
         state_ = kdisconnecting;
         channel_->disableAll(); //自动更新移除poller
         close_callback_(shared_from_this());
-    }
 }
 //用于延长Connection寿命
 void Connection::destroyed() {
@@ -50,8 +50,8 @@ void Connection::destroyed() {
         loop_->assertInLoopThread();
         if(!channel_)
             channel_->disableAll(); //自动更新移除poller
-        close(connfd_);
         state_ = kdisconnected;
+        close(connfd_);
         //LOG << "Connection fd = " << channel_->getFd() << " is disconnected"; 
     }
 }

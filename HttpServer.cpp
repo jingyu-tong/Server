@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-const int kAliveTime = 5 * 60 * 1000; //ms
+const int kAliveTime = 2 * 1000; //ms
 const int kShortTime  = 2 * 1000; //ms
 
 char favicon[555] = {
@@ -114,10 +114,9 @@ HttpServer::HttpServer(EventLoop* loop, int port, int thread_num)
 
 void HttpServer::onConnection(const ConnectionPointer& conn) {
     if(conn->getState() == Connection::kconnected) {
-        //printf("new connection\n");
-        HttpInformation* info = conn->getHttpinfo();
-        TimerManager::TimerPointer timer = info->getTimer();
-        timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+        // HttpInformation* info = conn->getHttpinfo();
+        // TimerManager::TimerPointer timer = info->getTimer();
+        // timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
         //LOG << "Connection fd = " << conn->getFd() << " is connected"; 
     }
     //TODO(jingyu):HttpServer需要一个自己的删除函数，在里头调用forceclose
@@ -133,7 +132,7 @@ void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
         conn->send(out);
         std::string conn_state = info->getHeaders("Connection");
         if(conn_state == "close" || conn_state == "Close" ) {
-            conn->foceClose(); //短连接，直接关闭
+            conn->forceClose(); //短连接，直接关闭
         } else {
             info->setState(HttpInformation::kExpectRequest);
         }
@@ -229,9 +228,9 @@ void HttpServer::parseRequest(const ConnectionPointer& conn, HttpInformation* in
             }
         } else if(state == HttpInformation::kExpectBody) {
             int content_length = -1;
-            std::map<std::string, std::string> headers = info->getHeaders();
-            if(headers.count("Content-Length") != 0) {
-                content_length = stoi(headers["Content-Length"]);
+            std::string content_str = info->getHeaders("Content-Length");
+            if(content_str != "") {
+                content_length = stoi(content_str);
             } else {
                 info->setError(true);
                 handleError(conn, 400, "Bad Request: Lack of Content-Length");
@@ -253,25 +252,43 @@ void HttpServer::parseRequest(const ConnectionPointer& conn, HttpInformation* in
 //分析request
 //TODO(jingyu): 对mmap read sendfile三者进行分析，并进行压测，综合分析、理解
 std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg) {
-    std::map<std::string, std::string> headers = info->getHeaders();
     std::string method = info->getMethod();
     std::string uri = info->getUri();
     std::string out;
-    TimerManager::TimerPointer timer = info->getTimer();
+    HttpInformation::WeakTimer timer = info->getTimer();
     if(method == "GET" || method == "HEAD") {
         std::string header;
         header += "HTTP/" + info->getVerison() + " 200 OK\r\n";
         //1.1默认为长连接
-        if(headers.count("Connection") && (headers["Connection"] == "keep-alive" || headers["Connection"] == "Keep-Alive")) {
+        std::string conn_state = info->getHeaders("Connection");
+        if(conn_state != "" && (conn_state == "keep-alive" || conn_state == "Keep-Alive")) {
             //长链接
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
-            conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
-        } else if(info->getVerison() == "HTTP/1.1" && headers["Connection"] != "close") {
+            if(timer.expired()) {
+                timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+                info->setTimer(timer);
+            } else {
+                auto guard = timer.lock();
+                conn->getLoop()->updateTimer(guard, kAliveTime); //收到消息，更新时间
+            }  
+        } else if(info->getVerison() == "1.1" && conn_state != "close") {
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
-            headers["Connection"] = "Keep-Alive";
-            conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
+            info->setHeaders("Connection", "Keep-Alive");
+            if(timer.expired()) {
+                timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+                info->setTimer(timer);
+            } else {
+                auto guard = timer.lock();
+                conn->getLoop()->updateTimer(guard, kAliveTime); //收到消息，更新时间
+            }  
         } else {
-            //conn->getLoop()->updateTimer(timer, kShortTime); //收到消息，更新时间
+            // if(!timer) {
+            //     timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+            //     info->setTimer(timer);
+            // } else {
+            //     printf("update\n");
+            //     conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
+            // } 
         }
 
         if(uri == "hello") {

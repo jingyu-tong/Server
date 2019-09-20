@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <memory>
+#include <set>
 
 class Connection;
 typedef std::string Buffer;    //用于Buffer
@@ -55,8 +56,9 @@ class Server : noncopyable {
         EventLoop* loop_;
         int port_;
         int listenfd_;
+        static const int kMaxFds = 100000; //最大描述符个数
         std::unique_ptr<Channel> accept_channel_;
-        std::map<int, ConnectionPointer> connections_;
+        std::set<ConnectionPointer> connections_;
         std::unique_ptr<EventLoopThreadPool> thread_pool_; 
 
         ConnectionCallback connection_callback_;

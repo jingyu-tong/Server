@@ -50,7 +50,6 @@ Server::Server(EventLoop* loop, int port, int thread_num)
 {
     //bind the sockets
     bindSocketsAndPort(listenfd_, port_);
-
 }
 
 void Server::start() {
@@ -70,18 +69,21 @@ void Server::handleConnection() {
     struct sockaddr_in client_addr;
     bzero(&client_addr, sizeof(client_addr));
     socklen_t clien = sizeof(client_addr);
-
-    int connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien);
-    // printf("the new connfd is: %d\n", connfd);
-    if(connfd > 0) { //成功，返回新的描述符
+    
+    int connfd = 0;
+    while( (connfd = accept(listenfd_, (struct sockaddr*) &client_addr, &clien)) > 0) { //成功，返回新的描述符
         EventLoop* conn_loop = thread_pool_->getNextLoop();
         ConnectionPointer new_connection(new Connection(conn_loop, connfd));
-        connections_[connfd] = new_connection;
+        connections_.insert(new_connection);
         //通过Connection类设置各种回调
         new_connection->setMessageCallback(message_callback_);
         new_connection->setConnectionCallback(connection_callback_);
         new_connection->setCloseCallback(std::bind(&Server::handleClose, this, std::placeholders::_1));
         conn_loop->runInLoop(std::bind(&Connection::settingDone, new_connection)); //必须，因为只允许自己本身线程更改channe信息
+        if(connfd >= kMaxFds) {
+            new_connection->forceClose();
+            continue;
+        }
     }
 }
 
@@ -92,7 +94,7 @@ void Server::handleClose(const ConnectionPointer& conn) {
 }
  void Server::handleCloseInLoop(const ConnectionPointer& conn) {
      loop_->assertInLoopThread();
-     connections_.erase(conn->getFd());
+     connections_.erase(conn);
      EventLoop* conn_loop = conn->getLoop();
      conn_loop->runInLoop(std::bind(&Connection::destroyed, conn));
  }

@@ -15,6 +15,7 @@
 //封装http所需要的一些信息
 class HttpInformation : noncopyable {
     public:
+        typedef std::weak_ptr<Timer> WeakTimer;
         enum State {
             kExpectRequest,
             kExpectHeader,
@@ -49,22 +50,25 @@ class HttpInformation : noncopyable {
             return uri_;
         }
         void setVerison(std::string verison) {
-            verison_ = verison;
+            verison_ = std::move(verison);
         }
         std::string getVerison() const {
             return verison_;
         }
         void setHeaders(std::string key, std::string val) {
-            headers_[key] = val;
+            headers_[std::move(key)] = std::move(val);
         }
         std::map<std::string, std::string> getHeaders() const{
             return headers_;
         }
         std::string getHeaders(std::string key) {
-            return headers_[key];
+            return headers_.count(key) == 0 ? "" : headers_[key];
         }
-        TimerManager::TimerPointer getTimer() {
-            return timer_;
+        WeakTimer getTimer() {
+            return  timer_;
+        }
+        void setTimer(WeakTimer timer) {
+            timer_ = timer;
         }
         void setError(bool error) {
             error_ = error;
@@ -79,7 +83,7 @@ class HttpInformation : noncopyable {
         std::string verison_;
         bool error_;
         std::map<std::string, std::string> headers_; //
-        TimerManager::TimerPointer timer_; //给一个timer用于超时关闭
+        WeakTimer timer_; //给一个timer用于超时关闭
 };
 
 //用于封装每个连接需要的信息和操作
@@ -91,6 +95,7 @@ class Connection : noncopyable,
         enum State {kconnected, kdisconnecting, kdisconnected}; //用于关闭链接识别状态
 
         Connection(EventLoop* loop, int connfd);
+        ~Connection();
 
         void setMessageCallback(MessageCallback mb) {
             message_callback_ = std::move(mb);
@@ -118,9 +123,9 @@ class Connection : noncopyable,
 
         void send(const std::string& message);//发送数据封装
         void shutdown(); //关闭链接
-        void foceClose() { //强制关闭链接读写端，这回删除这个链接
+        void forceClose() { //强制关闭链接读写端，这回删除这个链接
             if (state_ == kconnected){ //还在链接中
-                loop_->runInLoop(std::bind(&Connection::handleClose, this));
+                loop_->runInLoop(std::bind(&Connection::handleClose, shared_from_this()));
             }
         }
         void destroyed();

@@ -71,12 +71,10 @@ std::vector<Channel*> Epoll::poll(int timeoutMs) {
         int num_events = epoll_wait(epollfd_, &*events_.begin(), events_.size(), timeoutMs);
         if (num_events < 0)
             ; //fail
-        if (static_cast<size_t> (num_events) == events_.size())
-        {
+        if(static_cast<size_t> (num_events) == events_.size()) {
             events_.resize(events_.size()*2);
-        }
-        std::vector<ChannelPtr> active_channels = getActiveChannels(num_events); //返回更新，并返回活动channel
-        return active_channels;
+        } 
+        return getActiveChannels(num_events); //返回更新，并返回活动channel
     }
 }
 

@@ -20,7 +20,7 @@ int main(int, char**) {
 	EventLoop loop;
 	g_loop = &loop;
 
-	HttpServer server(&loop, 4200, 3);
+	HttpServer server(&loop, 4400, 3);
 
 	//LOG << "Ready to start";
 	loop.loop();
