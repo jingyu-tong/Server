@@ -54,7 +54,8 @@ Server::Server(EventLoop* loop, int port, int thread_num)
 
 void Server::start() {
     //注测处理新连接函数
-    accept_channel_->setReadCallback(std::bind(&Server::handleConnection, this));
+    //accept_channel_->setReadCallback(std::bind(&Server::handleConnection, this));
+    accept_channel_->setReadCallback([this]() {this->handleConnection(); });
     accept_channel_->enableReading();
     started_  = true;
     thread_pool_->start();
@@ -78,8 +79,10 @@ void Server::handleConnection() {
         //通过Connection类设置各种回调
         new_connection->setMessageCallback(message_callback_);
         new_connection->setConnectionCallback(connection_callback_);
-        new_connection->setCloseCallback(std::bind(&Server::handleClose, this, std::placeholders::_1));
-        conn_loop->runInLoop(std::bind(&Connection::settingDone, new_connection)); //必须，因为只允许自己本身线程更改channe信息
+        //new_connection->setCloseCallback(std::bind(&Server::handleClose, this, std::placeholders::_1));
+        new_connection->setCloseCallback([this](const ConnectionPointer & conn) {this->handleClose(conn); });
+        //conn_loop->runInLoop(std::bind(&Connection::settingDone, new_connection)); //必须，因为只允许自己本身线程更改channe信息
+        conn_loop->runInLoop([new_connection]() {new_connection->settingDone();});
         if(connfd >= kMaxFds) {
             new_connection->forceClose();
             continue;
@@ -90,11 +93,13 @@ void Server::handleConnection() {
 //删除链接函数
 //在Connection中注册，用于移除map中的链接
 void Server::handleClose(const ConnectionPointer& conn) {
-    loop_->runInLoop(std::bind(&Server::handleCloseInLoop, this, conn));
+    //loop_->runInLoop(std::bind(&Server::handleCloseInLoop, this, conn));
+    loop_->runInLoop([this, conn]() {this->handleCloseInLoop(conn); });
 }
  void Server::handleCloseInLoop(const ConnectionPointer& conn) {
      loop_->assertInLoopThread();
      connections_.erase(conn);
      EventLoop* conn_loop = conn->getLoop();
-     conn_loop->runInLoop(std::bind(&Connection::destroyed, conn));
+     //conn_loop->runInLoop(std::bind(&Connection::destroyed, conn));
+     conn_loop->runInLoop([conn]() {conn->destroyed(); });
  }

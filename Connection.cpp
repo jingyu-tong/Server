@@ -19,9 +19,11 @@ Connection::~Connection() {
     //LOG << "Connection fd = " << channel_->getFd() << " is destructed"; 
 }
 void Connection::settingDone() {
-    channel_->setReadCallback(std::bind(&Connection::handleMessage, this));
+    //channel_->setReadCallback(std::bind(&Connection::handleMessage, this));
+    channel_->setReadCallback([this]() {this->handleMessage();});
     channel_->enableReading();
-    channel_->setWriteCallback(std::bind(&Connection::handleWrite, this));
+    //channel_->setWriteCallback(std::bind(&Connection::handleWrite, this));
+    channel_->setWriteCallback([this]() {this->handleWrite();});
     state_ = kconnected;
     connection_callback_(shared_from_this());
 }
@@ -62,7 +64,8 @@ void Connection::send(const std::string& message) {
         if(loop_->isInLoopThread()) {
             sendInLoop(message);
         } else {
-            loop_->runInLoop(std::bind(&Connection::sendInLoop, this, message));
+            //loop_->runInLoop(std::bind(&Connection::sendInLoop, this, message));
+            loop_->runInLoop([this, message]() {this->sendInLoop(message); });
         }
     }
 }
@@ -114,7 +117,8 @@ void Connection::handleWrite() {
 //关闭链接
 void Connection::shutdown() {
     state_ = kdisconnecting; //表示准备关闭
-    loop_->runInLoop(std::bind(&Connection::shutdownInLoop, this));
+    //loop_->runInLoop(std::bind(&Connection::shutdownInLoop, this));
+    loop_->runInLoop([this]() {this->shutdownInLoop(); });
 }
 //loop中正式关闭
 void Connection::shutdownInLoop() {

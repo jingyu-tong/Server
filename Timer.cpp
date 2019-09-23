@@ -105,7 +105,8 @@ TimerManager::TimerManager(EventLoop* loop)
         timer_channel_(new Channel(loop_, timerfd_)),
         timer_calling_(false)
 {
-    timer_channel_->setReadCallback(std::bind(&TimerManager::handleExpiredEvent, this));
+    //timer_channel_->setReadCallback(std::bind(&TimerManager::handleExpiredEvent, this));
+    timer_channel_->setReadCallback([this]() {this->handleExpiredEvent(); });
     timer_channel_->enableReading();
 }
 
@@ -116,23 +117,25 @@ TimerManager::~TimerManager() {
 //将更改列表转移到IO线程完成
 TimerManager::TimerPointer TimerManager::addTimer(TimerCallback callback, int timeout) {
     TimerPointer new_timer(new Timer(std::move(callback), timeout));
-    loop_->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, new_timer));
+    //loop_->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, new_timer));
+    loop_->runInLoop([this, &new_timer]() {this->addTimerInLoop(new_timer); });
     return new_timer;
 }
 
 //添加timer的用户回调
-void TimerManager::addTimerInLoop(TimerPointer timer) {
+void TimerManager::addTimerInLoop(TimerPointer& timer) {
     timers_[timer.get()] = timer;
     resetTimerfd(timerfd_, timer);
 }
 
 //更新timer
-void TimerManager::updateTimer(TimerPointer timer, int timeout) {
-    loop_->runInLoop(std::bind(&TimerManager::updateTimerInLoop, this, timer, timeout));
+void TimerManager::updateTimer(TimerPointer& timer, int timeout) {
+    //loop_->runInLoop(std::bind(&TimerManager::updateTimerInLoop, this, timer, timeout));
+    loop_->runInLoop([this, &timer, timeout]() {this->updateTimerInLoop(timer, timeout); });
 }
 
 //更新某一个timer的时间
-void TimerManager::updateTimerInLoop(TimerPointer timer, int timeout) {
+void TimerManager::updateTimerInLoop(TimerPointer& timer, int timeout) {
     timer->update(timeout);
     timers_[timer.get()] = timer;
     resetTimerfd(timerfd_, timer);

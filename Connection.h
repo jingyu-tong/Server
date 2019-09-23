@@ -125,7 +125,9 @@ class Connection : noncopyable,
         void shutdown(); //关闭链接
         void forceClose() { //强制关闭链接读写端，这回删除这个链接
             if (state_ == kconnected){ //还在链接中
-                loop_->runInLoop(std::bind(&Connection::handleClose, shared_from_this()));
+                //loop_->runInLoop(std::bind(&Connection::handleClose, shared_from_this()));
+                auto guard = shared_from_this();
+                loop_->runInLoop([guard]() {guard->handleClose();});
             }
         }
         void destroyed();

@@ -10,7 +10,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-const int kAliveTime = 2 * 1000; //ms
+const int kAliveTime = 60 * 1000; //ms
 const int kShortTime  = 2 * 1000; //ms
 
 char favicon[555] = {
@@ -107,8 +107,10 @@ HttpServer::HttpServer(EventLoop* loop, int port, int thread_num)
     :   loop_(loop),
         server_(loop_, port, thread_num)
 {
-    server_.setConnectionCallback(std::bind(&HttpServer::onConnection, this, std::placeholders::_1));
-    server_.setMessageCallback(std::bind(&HttpServer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
+    //server_.setConnectionCallback(std::bind(&HttpServer::onConnection, this, std::placeholders::_1));
+    server_.setConnectionCallback([this](const ConnectionPointer& conn) {this->onConnection(conn); });
+    //server_.setMessageCallback(std::bind(&HttpServer::onMessage, this, std::placeholders::_1, std::placeholders::_2));
+    server_.setMessageCallback([this](const ConnectionPointer& conn, Buffer& msg) {this->onMessage(conn, msg); });
     server_.start();
 }
 
@@ -265,7 +267,8 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
             //长链接
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
             if(timer.expired()) {
-                timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+                //timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+                timer = conn->getLoop()->runAfter([conn]() {conn->forceClose(); }, kShortTime); //长时间没收到消息，关闭该链接
                 info->setTimer(timer);
             } else {
                 auto guard = timer.lock();
@@ -275,7 +278,8 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
             info->setHeaders("Connection", "Keep-Alive");
             if(timer.expired()) {
-                timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+                //timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
+                timer = conn->getLoop()->runAfter([conn]() {conn->forceClose(); }, kShortTime); //长时间没收到消息，关闭该链接
                 info->setTimer(timer);
             } else {
                 auto guard = timer.lock();
