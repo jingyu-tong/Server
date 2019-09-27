@@ -6,6 +6,7 @@
 #include "Connection.h"
 
 #include <sys/socket.h>
+#include <netinet/tcp.h>
 #include <string.h>
 #include <functional>
 
@@ -20,6 +21,8 @@ int createNonblockingSocketsFd() {
     if(sockfd < 0) {
         //failed
     }
+    int flag = 1;
+    setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof flag);
     return sockfd;
 }
 

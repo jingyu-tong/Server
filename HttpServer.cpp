@@ -296,7 +296,7 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
         }
 
         if(uri == "hello") {
-            char hello[] = {"Hello World"};
+            char hello[] = {"Hello World\n"};
             header += "Content-Type: text/plain\r\n";
             header += "Content-length: " + std::to_string(sizeof hello) + "\r\n";
             header += "Server: Jingyu's Server\r\n\r\n";
