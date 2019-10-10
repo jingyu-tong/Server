@@ -147,7 +147,7 @@ void TimerManager::handleExpiredEvent() {
     readTimerfd(timerfd_); //避免再次触发
     std::vector<TimerPointer> on_timers;
     
-    for(auto iter = timers_.begin(); iter != timers_.end(); ) {
+    for(auto iter = timers_.begin(); iter != timers_.end(); ) { //map迭代器中序遍历，从小到大
         TimerPointer early_timer = iter->second;
        
         //被删除或到期
