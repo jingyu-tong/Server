@@ -121,7 +121,13 @@ void HttpServer::onConnection(const ConnectionPointer& conn) {
         // timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
         //LOG << "Connection fd = " << conn->getFd() << " is connected"; 
     }
-    //TODO(jingyu):HttpServer需要一个自己的删除函数，在里头调用forceclose
+    if(conn->getState() == Connection::kdisconnecting) {
+        HttpInformation::WeakTimer timer = conn->getHttpinfo()->getTimer();
+        if(!timer.expired()) {
+            auto guard = timer.lock();
+            conn->getLoop()->cancelTimer(guard);
+        }
+    }
 }
 
 void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
@@ -135,6 +141,11 @@ void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
         std::string conn_state = info->getHeaders("Connection");
         if(conn_state == "close" || conn_state == "Close" ) {
             conn->forceClose(); //短连接，直接关闭
+            HttpInformation::WeakTimer timer = info->getTimer();
+            if(!timer.expired()) {
+                auto guard = timer.lock();
+                conn->getLoop()->cancelTimer(guard);
+            }
         } else {
             info->setState(HttpInformation::kExpectRequest);
         }

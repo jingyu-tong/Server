@@ -44,6 +44,7 @@ void Connection::handleClose() {
         loop_->assertInLoopThread();
         state_ = kdisconnecting;
         channel_->disableAll(); //自动更新移除poller
+        connection_callback_(shared_from_this());
         close_callback_(shared_from_this());
 }
 //用于延长Connection寿命

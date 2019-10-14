@@ -3,6 +3,7 @@
 
 #include "Timer.h"
 #include "Channel.h"
+#include "Logging.h"
 
 #include <sys/time.h>
 #include <queue>
@@ -63,8 +64,7 @@ void resetTimerfd(int timerfd, TimerManager::TimerPointer timer)
 }
 
 Timer::Timer(TimerCallback callBack, int timeout)
-    :   timer_callback_(std::move(callBack)),
-        delete_(false)
+    :   timer_callback_(std::move(callBack))
  {
     struct timeval now;
     gettimeofday(&now, NULL);
@@ -91,7 +91,6 @@ bool Timer::isValid() {
     if(time_now < expired_time_)
         return true;
     else {
-        this->setDelete();
         return false;
     }
 }
@@ -124,7 +123,8 @@ TimerManager::TimerPointer TimerManager::addTimer(TimerCallback callback, int ti
 
 //添加timer的用户回调
 void TimerManager::addTimerInLoop(TimerPointer& timer) {
-    timers_[timer.get()] = timer;
+    auto iter = timers_.insert({timer->getExpTime(), timer});
+    //timer->setPos(iter);
     resetTimerfd(timerfd_, timer);
 }
 
@@ -136,32 +136,62 @@ void TimerManager::updateTimer(TimerPointer& timer, int timeout) {
 
 //更新某一个timer的时间
 void TimerManager::updateTimerInLoop(TimerPointer& timer, int timeout) {
-    timer->update(timeout);
-    timers_[timer.get()] = timer;
-    resetTimerfd(timerfd_, timer);
+    auto iter = timers_.find(timer->getExpTime());
+    while(iter != timers_.end() && iter->first == timer->getExpTime()) {
+        if(iter->second == timer) {
+            timers_.erase(iter++);
+            timer->update(timeout);
+            timers_.insert({timer->getExpTime(), timer});
+            resetTimerfd(timerfd_, timer);
+            break;
+        }
+        ++iter;  
+    }
 }
 
+//删除timer
+void TimerManager::deleteTimer(TimerPointer& timer) {
+    //loop_->runInLoop(std::bind(&TimerManager::deleteTimerInLoop, this, timer));
+    loop_->runInLoop([this, &timer]() {this->deleteTimerInLoop(timer); });
+}
+void TimerManager::deleteTimerInLoop(TimerPointer& timer) {
+    //LOG << "erase timer in timers " << timer->getExpTime(); 
+    auto iter = timers_.find(timer->getExpTime());
+    while(iter != timers_.end() && iter->first == timer->getExpTime()) {
+        if(iter->second == timer) {
+            timers_.erase(iter++);
+            break;
+        }
+        ++iter;  
+    }
+    //timers_.erase(timer->getPos());
+}
 //处理超时连接
-//采用小顶堆对定时器进行管理
 void TimerManager::handleExpiredEvent() {
     readTimerfd(timerfd_); //避免再次触发
-    std::vector<TimerPointer> on_timers;
+    std::vector<std::pair<size_t, TimerPointer>> on_timers;
     
-    for(auto iter = timers_.begin(); iter != timers_.end(); ) { //map迭代器中序遍历，从小到大
-        TimerPointer early_timer = iter->second;
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    size_t now_ms = (((now.tv_sec) * 1000) + (now.tv_usec / 1000));
+
+    TimerMap::iterator end = timers_.lower_bound(now_ms);
+    std::copy(timers_.begin(), end, back_inserter(on_timers));
+    timers_.erase(timers_.begin(), end);
+
+    // for(auto iter = timers_.begin(); iter != timers_.end(); ) { 
+    //     TimerPointer early_timer = iter->second;
        
-        //被删除或到期
-        if(early_timer->isDelete()) 
-            timers_.erase(iter++);
-        else if(early_timer->isValid() == false) {
-            timers_.erase(iter++);
-            on_timers.push_back(early_timer);
-        }   
-        else
-            break; //都没有，下次触发再处理
-    }
+    //     //到期
+    //     if(early_timer->isValid() == false) {
+    //         timers_.erase(iter++); //迭代器，注意失效
+    //         on_timers.push_back(early_timer);
+    //     }   
+    //     else
+    //         break; //都没有，下次触发再处理
+    // }
 
     for(const auto& on_timer : on_timers) {
-        on_timer->run();
+        on_timer.second->run();
     }
 }

@@ -102,7 +102,11 @@ TimerManager::TimerPointer EventLoop::runAfter(Timer::TimerCallback callback, in
 void EventLoop::updateTimer(std::shared_ptr<Timer>& timer, int timeout) {
     timer_queue_->updateTimer(timer, timeout);
 }
-
+//删除定时器
+void EventLoop::cancelTimer(std::shared_ptr<Timer>& timer) {
+    //LOG << "begin to delete timer: " << timer->getExpTime(); 
+    timer_queue_->deleteTimer(timer);
+}
 //跨线程调用
 //若在当前线程调用，直接进行回调
 //否则，会唤醒IO线程，进行回调

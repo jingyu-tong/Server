@@ -44,6 +44,7 @@ public:
     //定时器封装
     std::shared_ptr<Timer> runAfter(TimerCallback callback, int timeout);
     void updateTimer(std::shared_ptr<Timer>& timer, int timeout); 
+    void cancelTimer(std::shared_ptr<Timer>& timer);
 
     //跨线程调用
     void runInLoop(Functor callback); 
