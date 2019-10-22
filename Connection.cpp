@@ -54,7 +54,6 @@ void Connection::destroyed() {
         if(!channel_)
             channel_->disableAll(); //自动更新移除poller
         state_ = kdisconnected;
-        close(connfd_);
         //LOG << "Connection fd = " << channel_->getFd() << " is disconnected"; 
     }
 }
@@ -87,7 +86,7 @@ void Connection::sendInLoop(const std::string& message) {
 
     //没有写完，说明暂时不可写了，开启channel的
     if(nwrite < message.size()) {
-        outbuffer_  = message.substr(nwrite);
+        outbuffer_  += message.substr(nwrite);
         if(!channel_->isWriting()) {
             channel_->enableWriting();
         }

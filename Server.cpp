@@ -64,10 +64,7 @@ void Server::start() {
     thread_pool_->start();
 }
 
-//accept 一个
-//TODO(jingyu): 尝试其他方法
-//1. 循环accept，直到没有新连接
-//2. 每次accept N（一般为10）个链接
+
 void Server::handleConnection() {
     loop_->assertInLoopThread();
     struct sockaddr_in client_addr;

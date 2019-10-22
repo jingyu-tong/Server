@@ -45,7 +45,7 @@ void AsyncLogging::append(const char* logline, int len) {
 //也常备2块缓冲区
 void AsyncLogging::threadFunc() {
     assert(running_);
-    latch_.countdown(); //什么用？？？
+    latch_.countdown(); //通知父线程
     LogFile output(base_name_);
     BufferPtr buffer1(new Buffer);
     BufferPtr buffer2(new Buffer);

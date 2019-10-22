@@ -168,6 +168,7 @@ void TimerManager::deleteTimerInLoop(TimerPointer& timer) {
 }
 //处理超时连接
 void TimerManager::handleExpiredEvent() {
+    // LOG << "Timer is expired";
     readTimerfd(timerfd_); //避免再次触发
     std::vector<std::pair<size_t, TimerPointer>> on_timers;
     
@@ -176,6 +177,8 @@ void TimerManager::handleExpiredEvent() {
     size_t now_ms = (((now.tv_sec) * 1000) + (now.tv_usec / 1000));
 
     TimerMap::iterator end = timers_.lower_bound(now_ms);
+    // if(end == timers_.end()) 
+    //     LOG << "Timer has already been deleted";
     std::copy(timers_.begin(), end, back_inserter(on_timers));
     timers_.erase(timers_.begin(), end);
 

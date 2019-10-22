@@ -142,10 +142,6 @@ void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
         if(conn_state == "close" || conn_state == "Close" ) {
             conn->forceClose(); //短连接，直接关闭
             HttpInformation::WeakTimer timer = info->getTimer();
-            if(!timer.expired()) {
-                auto guard = timer.lock();
-                conn->getLoop()->cancelTimer(guard);
-            }
         } else {
             info->setState(HttpInformation::kExpectRequest);
         }
@@ -263,7 +259,6 @@ void HttpServer::parseRequest(const ConnectionPointer& conn, HttpInformation* in
 }
 
 //分析request
-//TODO(jingyu): 对mmap read sendfile三者进行分析，并进行压测，综合分析、理解
 std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInformation* info, Buffer& msg) {
     std::string method = info->getMethod();
     std::string uri = info->getUri();
