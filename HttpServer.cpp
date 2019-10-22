@@ -142,10 +142,6 @@ void HttpServer::onMessage(const ConnectionPointer& conn, Buffer& msg) {
         if(conn_state == "close" || conn_state == "Close" ) {
             conn->forceClose(); //短连接，直接关闭
             HttpInformation::WeakTimer timer = info->getTimer();
-            if(!timer.expired()) {
-                auto guard = timer.lock();
-                conn->getLoop()->cancelTimer(guard);
-            }
         } else {
             info->setState(HttpInformation::kExpectRequest);
         }

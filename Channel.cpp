@@ -21,6 +21,7 @@ Channel::Channel(EventLoop* loop, int fd)
 
 Channel::~Channel() {
     // printf("delete channel\n");
+    close(fd_);
     assert(!event_handleing_);
 }
 
