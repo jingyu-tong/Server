@@ -64,7 +64,8 @@ void resetTimerfd(int timerfd, TimerManager::TimerPointer timer)
 }
 
 Timer::Timer(TimerCallback callBack, int timeout)
-    :   timer_callback_(std::move(callBack))
+    :   timer_callback_(std::move(callBack)),
+        deleted_(false)
  {
     struct timeval now;
     gettimeofday(&now, NULL);
@@ -84,6 +85,8 @@ void Timer::update(int timeout) {
 }
 
 bool Timer::isValid() {
+    if(deleted_) return false;
+    
     struct timeval now;
     gettimeofday(&now, NULL);
     size_t time_now = (((now.tv_sec) * 1000) + (now.tv_usec / 1000));
@@ -156,15 +159,16 @@ void TimerManager::deleteTimer(TimerPointer& timer) {
 }
 void TimerManager::deleteTimerInLoop(TimerPointer& timer) {
     //LOG << "erase timer in timers " << timer->getExpTime(); 
-    auto iter = timers_.find(timer->getExpTime());
-    while(iter != timers_.end() && iter->first == timer->getExpTime()) {
-        if(iter->second == timer) {
-            timers_.erase(iter++);
-            break;
-        }
-        ++iter;  
-    }
+    // auto iter = timers_.find(timer->getExpTime());
+    // while(iter != timers_.end() && iter->first == timer->getExpTime()) {
+    //     if(iter->second == timer) {
+    //         timers_.erase(iter++);
+    //         break;
+    //     }
+    //     ++iter;  
+    // }
     //timers_.erase(timer->getPos());
+    timer->cancel();
 }
 //处理超时连接
 void TimerManager::handleExpiredEvent() {
@@ -195,6 +199,7 @@ void TimerManager::handleExpiredEvent() {
     // }
 
     for(const auto& on_timer : on_timers) {
-        on_timer.second->run();
+        if(on_timer.second->isValid())
+            on_timer.second->run();
     }
 }

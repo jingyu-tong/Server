@@ -28,9 +28,11 @@ class Timer {
         bool isValid();
         size_t getExpTime() const { return expired_time_; } 
         void run() {timer_callback_(); }
+        void cancel() {deleted_ = true; }
     private:
         size_t expired_time_; //到期时间
         TimerCallback timer_callback_; //到期回调，被删除不执行
+        bool deleted_;
 };
 
 //管理Timer

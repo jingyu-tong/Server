@@ -269,7 +269,8 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
         header += "HTTP/" + info->getVerison() + " 200 OK\r\n";
         //1.1默认为长连接
         std::string conn_state = info->getHeaders("Connection");
-        if(conn_state != "" && (conn_state == "keep-alive" || conn_state == "Keep-Alive")) {
+        if((conn_state != "" && (conn_state == "keep-alive" || conn_state == "Keep-Alive"))
+            || (info->getVerison() == "1.1" && conn_state != "close")) {
             //长链接
             header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
             if(timer.expired()) {
@@ -280,26 +281,7 @@ std::string HttpServer::analyzeRequest(const ConnectionPointer& conn, HttpInform
                 auto guard = timer.lock();
                 conn->getLoop()->updateTimer(guard, kAliveTime); //收到消息，更新时间
             }  
-        } else if(info->getVerison() == "1.1" && conn_state != "close") {
-            header += std::string("Connection: Keep-Alive\r\n") + "Keep-Alive: timeout=" + std::to_string(kAliveTime) + "\r\n";
-            info->setHeaders("Connection", "Keep-Alive");
-            if(timer.expired()) {
-                //timer = conn->getLoop()->runAfter(std::bind(&Connection::forceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
-                timer = conn->getLoop()->runAfter([conn]() {conn->forceClose(); }, kShortTime); //长时间没收到消息，关闭该链接
-                info->setTimer(timer);
-            } else {
-                auto guard = timer.lock();
-                conn->getLoop()->updateTimer(guard, kAliveTime); //收到消息，更新时间
-            }  
-        } else {
-            // if(!timer) {
-            //     timer = conn->getLoop()->runAfter(std::bind(&Connection::foceClose, conn), kShortTime); //长时间没收到消息，关闭该链接
-            //     info->setTimer(timer);
-            // } else {
-            //     printf("update\n");
-            //     conn->getLoop()->updateTimer(timer, kAliveTime); //收到消息，更新时间
-            // } 
-        }
+        } 
 
         if(uri == "hello") {
             char hello[] = {"Hello World\n"};
