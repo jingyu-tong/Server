@@ -29,6 +29,7 @@ class Timer {
         size_t getExpTime() const { return expired_time_; } 
         void run() {timer_callback_(); }
         void cancel() {deleted_ = true; }
+        bool isDeleted() {return deleted_; }
     private:
         size_t expired_time_; //到期时间
         TimerCallback timer_callback_; //到期回调，被删除不执行
@@ -51,6 +52,7 @@ class TimerManager {
         void addTimerInLoop(TimerPointer& timer); //把修改列表转移到IO线程
         void deleteTimer(TimerPointer& timer); //删除timer
         void deleteTimerInLoop(TimerPointer& timer);
+        int getExpiredTime();
     private:
         EventLoop* loop_;
         TimerMap timers_;

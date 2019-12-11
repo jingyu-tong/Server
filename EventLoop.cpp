@@ -63,7 +63,7 @@ void EventLoop :: loop() {
     
     while(!quit_) {
         active_channels_.clear();
-        active_channels_ = poller_->poll(kPollTimeMs);
+        active_channels_ = poller_->poll(timer_queue_->getExpiredTime());
 
         //分发给handler
         for(auto it = active_channels_.begin(); it != active_channels_.end(); ++it ) {
