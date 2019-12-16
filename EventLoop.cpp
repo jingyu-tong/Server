@@ -70,6 +70,7 @@ void EventLoop :: loop() {
             (*it)->handleEvent();
         }
         doPendingFunctors();
+        handleExpired();
     }
     looping_ = false;
 }
@@ -167,4 +168,8 @@ void EventLoop::wakeup() {
     if(n != sizeof one) {
         //LOG << "EventLoop::wakeup() writes" << n << "bytes";
     }
+}
+
+void EventLoop::handleExpired() {
+    timer_queue_->handleExpiredEvent();
 }

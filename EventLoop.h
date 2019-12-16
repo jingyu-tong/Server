@@ -56,6 +56,7 @@ private:
     void handleEventfd(); //eventfd callback
     void doPendingFunctors(); //处理回调
     void wakeup(); //唤醒
+    void handleExpired();
 
     bool looping_; 
     bool quit_;
